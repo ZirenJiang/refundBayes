@@ -1,0 +1,38 @@
+Package: refundBayes
+Encoding: UTF-8
+Type: Package
+Title: Bayesian Functional Data Regression
+Version: 0.2
+Date: 2025-02-05
+Authors@R:
+   c(person("Ziren", "Jiang", email = "jian0746@umn.edu",
+             role = c("aut", "cre")),
+      person("Erjia", "Cui", role = c("ctb")),
+      person("Ciprian", "Crainiceanu", role = c("ctb")))
+Depends:
+    R (>= 3.6.0),
+    Rcpp (>= 0.12.0),
+    rstan (>= 2.29.0),
+    methods,
+    parallel,
+    refund,
+    scam,
+    splines2,
+    stats
+Imports:
+    ggplot2 (>= 2.0.0),
+    Rcpp (>= 0.12.0),
+    rstan (>= 2.29.0),
+    parallel,
+    refund,
+    scam,
+    splines2,
+    stats
+Description: 
+LazyData: true
+NeedsCompilation: no
+License: GPL-2
+URL: 
+BugReports: 
+Additional_repositories:
+RoxygenNote: 7.3.1

@@ -1,0 +1,215 @@
+---
+title: "refundBayes Vignette"
+output: github_document
+date: "2025-02-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this vignette, we introduce the use of our $\texttt{rnhanesdata}$ package with the NHANES dataset. The $\texttt{rnhanesdata}$ package provides users a continent way to run Bayesian functional data analysis using the Stan language which is the state-of-the-art language for Bayesian analysis. Our R package $\texttt{rnhanesdata}$ was developed to have a similar syntax to that in $\texttt{mgcv::gam}$, though it uses Bayesian posterior inference and a few additional arguments that are specific to the Stan implementation. Specifically, in this vignette, we illustrate how to use our $\texttt{rnhanesdata}$ package to:
+
+-   Fit the Bayesian functional regression model with scalar (Binary, Gaussian) outcomes using Stan.
+
+-   Plot the pointwise and the correlation and multiplicity adjusted (CMA) credible intervals for the estimated functional coefficients.
+
+-   Bayesian model diagnostics with the trace plot.
+
+We compare our Bayesian model output with the state-of-the-art frequentist package mgcv in terms of the estimation of the functional coefficient.
+
+# Preparation
+
+## Install the refundBayes package
+
+The $\texttt{rnhanesdata}$ package can be installed through the source file:
+
+```{r}
+#install.packages("refundBayes_0.2.tar.gz", type = "source", repos=NULL)
+```
+
+## Prepare the illustrative NHANES data set
+
+NHANES (National Health and Nutrition Examination Survey) is a nationwide study conducted by the United States Centers for Disease Control and Prevention (CDC) to assess the health and nutritional status of adults and children in the United States. It is conducted in two-year waves with approximately $10{,}000$ participants per wave.
+
+In this illustrative example, we apply our Bayesian functional regression programs to study the association between scalar and functional predictors and mortality in the NHANES. The functional predictor is the minute-level average daily physical activity measured using accelerometers. Accelerometry data was summarized by NHANES at the minute level using the "Monitor Independent Movement Summary" (MIMS) units. The distribution of MIMS at each time point exhibits substantial skewness and a log-transformation was applied at the minute level, which resulted in more symmetric marginal distributions. For every individual, data was averaged over available days of that individual at each minute, resulting in a $1{,}440$-dimensional vector of average log-MIMS values for every study participant. Processing was conducted using a similar pipeline to that described in the $\texttt{rnhanesdata}$ package. Mortality was determined by linking the NHANES data to death certificate records from the National Death Index, maintained by the National Center for Health Statistics (NCHS), through the end of 2019.
+
+In this case study, the outcome is a binary indicator of whether or not the person died before 2019 (that is, the five-year mortality indicator). The predictors are the minute-level physical activity expressed in average log-MIMS, age, gender, race, body mass index (BMI), poverty-to-income ratio (PIR), coronary heart disease (CHD), and education level. The data after preprocessing can be downloaded from
+
+<http://www.ciprianstats.org/sites/default/files/nhanes/nhanes_fda_with_r.rds>
+
+After download the data, we subset the data with subjects whose covariates are fully observed.
+
+```{r}
+set.seed(12345)
+# Load the data, you may to your own path
+nhanes_fda_with_r = readRDS("D:/Code/R/18. FDA Survival/18. FDA Survival/nhanes_fda_with_r.rds")
+
+# We only include participants with fully observed covariates
+nhanes_lite_use=nhanes_fda_with_r
+pred.names=c("age","gender","race","BMI","PIR","CHD","education")
+pred.names.cat=c("gender","race","CHD","education")
+for(cova in pred.names){
+  nhanes_lite_use=nhanes_lite_use[!is.na(nhanes_lite_use[cova]),]
+}
+nhanes_lite_use=nhanes_lite_use[!is.na(nhanes_lite_use$event),]
+nhanes_lite_use=nhanes_lite_use[-which(nhanes_lite_use$CHD=="Refused"),]
+
+# Create the auxiliary matrices for fitting the functional regression 
+nhanes_lite_use$lmat = I(matrix(1/1440, ncol=1440, nrow=nrow(nhanes_lite_use))) 
+nhanes_lite_use$tmat = I(matrix(1:1440, ncol=1440, nrow=nrow(nhanes_lite_use), byrow=TRUE))
+
+# Outcome variable of five year mortality
+nhanes_lite_use$five_year_mort = (nhanes_lite_use$time<60)&(nhanes_lite_use$event==1)
+```
+
+# Frequentist approach
+
+## Fit the frequentist model using mgcv
+
+We first fit the scalar-on-function regression model using the frequentist $\texttt{mgcv}$ package.
+
+```{r}
+library(mgcv)
+fit_freq_b = gam(five_year_mort ~ age+gender+race+BMI+PIR+CHD+education + s(tmat,  by=lmat*MIMS, bs="cc", k=10),
+                 data=nhanes_lite_use, 
+                 family=binomial())
+```
+
+## Frequentist inference on the functional coefficient
+
+The pointwise confidence interval can be directly obtained through the $\texttt{plot.gam}$ function. However, to obtain the correlation and multiplicity adjusted (CMA) confidence interval, we need to manually calculate using the joint distribution of the estimated parameters (describe later).
+
+```{r}
+# Obtain the pointwise confidence interval for the functional coefficient
+plotfot.condi=plot.gam(fit_freq_b,unconditional = FALSE)
+
+summary(fit_freq_b)
+```
+
+# Bayesian approach
+
+## Fit the Bayesian model using refundBayes
+
+We now fit the Bayesian functional regression model using our $\texttt{refundBayes}$ package. The bfrs function from $\texttt{refundBayes}$ package uses a similar argument as the gam function. It automatically generates the Stan code, and Stan data according to the input formula and dataset. ()
+
+```{r}
+library(refundBayes)
+
+timeStart = Sys.time()
+fit_bfrs = refundBayes::bfrs(five_year_mort ~ age+gender+race+BMI+PIR+CHD+education + s(tmat,  by = lmat*MIMS, bs="cc", k=10), # The bfrs function takes a similar formula syntax to that in the gam function.
+      data=nhanes_lite_use, 
+      family = binomial(), 
+      runStan = TRUE, # Whether automatically run Stan program. If false, bfrs will only provide the Stan code and data after preprocessing.
+      n.iter = 15000, # Total number of posterior sampling.
+      n.warmup = 5000, # Burn-in value.
+      n.knots = 3 # Number of parallel computed chains for posterior sampling. Suggest to have this value larger than 1 in order to check the convergence of the MCMC sampling.
+      )
+timeEnd = Sys.time()
+
+# Check the running time for Bayesian posterior sampling
+difftime(timeEnd, timeStart, units='mins')
+
+```
+
+## Bayesian inference
+
+$\texttt{refundBayes}$ package provides a plot function $\texttt{plot.bfrs}$ for the pointwise and CMA credible interval.
+
+```{r}
+library(ggplot2)
+plot.bfrs(fit_bfrs,include = "both")
+```
+
+We can also use the $\texttt{summary_scalar.bfrs}$ function for the scalar coefficients.
+
+```{r}
+summary_scalar.bfrs(fit_bfrs)
+```
+
+We now compare the estimated functional coefficient between the frequentist and Bayesian methods.
+
+```{r,}
+# Calculate the frequentist CMA confidence interval
+testfit=fit_bfrs$spline_basis[[1]]$base_mat %*% fit_freq_b$coefficients[16:24]
+
+Xmat_use = fit_bfrs$spline_basis[[1]]$base_mat
+Vb_use = vcov(fit_freq_b)[16:24,16:24]
+Vf_use = (Xmat_use %*% Vb_use %*% t(Xmat_use))[(1:100)*14.4,(1:100)*14.4]
+
+Df = sqrt(diag(Vf_use)) #Calculate the correlation matrix 
+Cf = cov2cor(Vf_use) #Obtain the critical value for the joint confidence interval 
+library(mvtnorm)
+qCf_alpha = qmvnorm(0.95, corr = Cf, tail = "both.tails") #Obtain the upper and lower bounds of the joint CI 
+uCI_joint = testfit[(1:100)*14.4] + qCf_alpha$quantile * Df 
+lCi_joint = testfit[(1:100)*14.4] - qCf_alpha$quantile * Df
+
+func_coeff_samp=fit_bfrs$func_effect[[1]]
+
+func_coeff_sd=apply(func_coeff_samp,2,sd)
+
+func_coeff_extr=1:dim(func_coeff_samp)[1]
+
+func_coeff_est=apply(func_coeff_samp,2,mean)
+
+for(i in 1:dim(func_coeff_samp)[1]){
+  func_coeff_extr[i]=max(abs(func_coeff_samp[i,]-func_coeff_est)/func_coeff_sd)
+}
+
+cutpoint=quantile(func_coeff_extr,probs = 0.95)
+
+
+func_coeff_upper_old = func_coeff_est + cutpoint*func_coeff_sd
+
+func_coeff_lower_old = func_coeff_est - cutpoint*func_coeff_sd
+
+func_coeff_upper_pointwise = apply(func_coeff_samp, 2, function(x){
+  quantile(x,prob = 0.975)
+})
+
+func_coeff_lower_pointwise = apply(func_coeff_samp, 2, function(x){
+  quantile(x,prob = 0.025)
+})
+
+
+plotdata2=data.frame(value=c(func_coeff_est,
+                            plotfot.condi[[1]]$fit),
+                    CI.upper=c(func_coeff_upper_pointwise,
+                               plotfot.condi[[1]]$fit+plotfot.condi[[1]]$se),
+                    CI.lower=c(func_coeff_lower_pointwise,
+                               plotfot.condi[[1]]$fit-plotfot.condi[[1]]$se),
+                    CMA.upper = c(func_coeff_upper_old,
+                                  uCI_joint),
+                    CMA.lower = c(func_coeff_lower_old,
+                                  lCi_joint),
+                    xmat=c(rep(1: dim(nhanes_lite_use$MIMS)[2]/60,1),
+                           rep(plotfot.condi[[1]]$x/60,1)),
+                    Method=c(rep("Bayesian",dim(nhanes_lite_use$MIMS)[2]),
+                           rep("Frequentist",100)))
+
+library(ggplot2)
+
+
+
+ggplot(plotdata2, aes(y = value, x = xmat, color = Method)) +
+  geom_line(size = 1) +
+  geom_ribbon(aes(ymin = CI.lower, ymax = CI.upper, fill = "Pointwise CI"), 
+              alpha = 0.2, color = "black", linetype = "dashed") +
+  geom_ribbon(aes(ymin = CMA.lower, ymax = CMA.upper, fill = "CMA CI"), 
+              alpha = 0.2, linetype = "dotted", color = "black") +
+  ylab("Functional Effect") +
+  xlab("Time (hour)") +
+  scale_x_continuous(breaks = seq(0, 24, by = 3)) +
+  coord_cartesian(xlim = c(0, 24)) +facet_wrap(~ Method)+
+  scale_fill_manual(values = c("Pointwise CI" = "darkgrey", "CMA CI" = "lightgrey"), name = "Interval Type") +
+  theme_minimal()
+
+```
+
+## Bayesian model diagnostic
+
+```{r}
+traceplot(fit_bfrs$stanfit,pars = c("eta_0","gamma"))
+```
+
+
