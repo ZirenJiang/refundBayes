@@ -216,7 +216,7 @@ library(ggplot2)
 plot.bfrs(fit_bfrs,include = "both")
 ```
 
-![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-6-1.png){width=500 height=300}<!-- -->
+![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 #### Summary Table for the Scalar Coefficients
 
@@ -247,7 +247,7 @@ summary_scalar.bfrs(fit_bfrs)
 
 The following plot compares the estimated functional coefficient between the frequentist and Bayesian methods.
 
-![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-8-1.png){width=500 height=300}<!-- -->
+![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ### Bayesian model diagnostic
 
