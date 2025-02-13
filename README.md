@@ -115,7 +115,7 @@ The `plot.gam` function provides a visual representation of the estimated functi
 plotfot.condi = plot.gam(fit_freq_b, unconditional = FALSE, rug = FALSE)
 ```
 
-![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-4-1.png){width=500}<!-- -->
+![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 #### Summary Table for the Scalar Coefficients
 
@@ -216,7 +216,7 @@ library(ggplot2)
 plot.bfrs(fit_bfrs,include = "both")
 ```
 
-![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-6-1.png){width=500}<!-- -->
+![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 #### Summary Table for the Scalar Coefficients
 
@@ -247,7 +247,7 @@ summary_scalar.bfrs(fit_bfrs)
 
 The following plot compares the estimated functional coefficient between the frequentist and Bayesian methods.
 
-![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-8-1.png){width=500}<!-- -->
+![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ### Bayesian model diagnostic
 
