@@ -97,7 +97,7 @@ We first fit the scalar-on-function regression (SoFR) model using the frequentis
 ``` r
 library(mgcv)
 fit_freq_b = gam(five_year_mort ~ age + gender + race + BMI + PIR + CHD + education + 
-                        s(tmat,  by = lmat * MIMS, bs = "cc", k = 10),
+                 s(tmat,  by = lmat * MIMS, bs = "cc", k = 10),
                  data = nhanes_lite_use, 
                  family = binomial())
 ```
@@ -180,7 +180,7 @@ library(refundBayes)
 ``` r
 # The bfrs function takes a similar formula syntax to that in the gam function.
 fit_bfrs = refundBayes::bfrs(five_year_mort ~ age + gender + race + BMI + PIR + CHD + education + 
-                                              s(tmat,  by = lmat * MIMS, bs = "cc", k = 10), 
+      s(tmat,  by = lmat * MIMS, bs = "cc", k = 10), 
       data = nhanes_lite_use, 
       family = binomial(), 
       runStan = TRUE, # Whether automatically run Stan program. 
@@ -216,7 +216,7 @@ library(ggplot2)
 plot.bfrs(fit_bfrs,include = "both")
 ```
 
-![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-6-1.png){width=500 height=300}<!-- -->
 
 #### Summary Table for the Scalar Coefficients
 
@@ -247,7 +247,7 @@ summary_scalar.bfrs(fit_bfrs)
 
 The following plot compares the estimated functional coefficient between the frequentist and Bayesian methods.
 
-![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-8-1.png){width=500 height=300}<!-- -->
 
 ### Bayesian model diagnostic
 
