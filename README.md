@@ -66,6 +66,7 @@ After loading the data, we subset participants with fully observed covariates:
 
 ``` r
 set.seed(12345)
+# Load the preprocessed data
 nhanes_fda_with_r = readRDS("nhanes_fda_with_r.rds")
 
 # Retain only participants with fully observed covariates
@@ -95,7 +96,8 @@ We first fit the scalar-on-function regression (SoFR) model using the frequentis
 
 ``` r
 library(mgcv)
-fit_freq_b = gam(five_year_mort ~ age + gender + race + BMI + PIR + CHD + education + s(tmat,  by = lmat * MIMS, bs = "cc", k = 10),
+fit_freq_b = gam(five_year_mort ~ age + gender + race + BMI + PIR + CHD + education + 
+                        s(tmat,  by = lmat * MIMS, bs = "cc", k = 10),
                  data = nhanes_lite_use, 
                  family = binomial())
 ```
@@ -120,6 +122,7 @@ plotfot.condi = plot.gam(fit_freq_b, unconditional = FALSE, rug = FALSE)
 The `summary` function can be used to create a summary table for the scalar coefficients:
 
 ``` r
+# Summary of the scalar coefficients
 summary(fit_freq_b)
 ```
 
@@ -175,13 +178,15 @@ library(refundBayes)
 ```
 
 ``` r
-fit_bfrs = refundBayes::bfrs(five_year_mort ~ age + gender + race + BMI + PIR + CHD + education + s(tmat,  by = lmat * MIMS, bs = "cc", k = 10), # The bfrs function takes a similar formula syntax to that in the gam function.
+# The bfrs function takes a similar formula syntax to that in the gam function.
+fit_bfrs = refundBayes::bfrs(five_year_mort ~ age + gender + race + BMI + PIR + CHD + education + 
+                                              s(tmat,  by = lmat * MIMS, bs = "cc", k = 10), 
       data = nhanes_lite_use, 
       family = binomial(), 
-      runStan = TRUE, # Whether automatically run Stan program. If false, bfrs will only provide the Stan code and data after preprocessing.
+      runStan = TRUE, # Whether automatically run Stan program. 
       n.iter = 1500, # Total number of posterior sampling.
       n.warmup = 500, # Burn-in value.
-      n.knots = 3 # Number of parallel computed chains for posterior sampling. Suggest to have this value larger than 1 in order to check the convergence of the MCMC sampling.
+      n.knots = 3 # Number of parallel computed chains for posterior sampling.
       )
 ```
 
@@ -193,7 +198,7 @@ The `bfrs` function use the exact same syntax as the `gam` function for the func
 
 -   `n.warmup`: Number of samples discarded at the beginning of the sampling (burn-in value).
 
--   `n.knots`: Number of parallel computed chains for posterior sampling. `bfrs` uses the same number of CPU cores as the number of chains. Notice that this is different from the "knots" terminology used in spline basis.
+-   `n.knots`: Number of parallel computed chains for posterior sampling. `bfrs` uses the same number of CPU cores as the number of chains. We recommend setting this value greater than 1 to assess the convergence of the MCMC sampling. Notice that this is different from the "knots" terminology used in spline basis.
 
 ### Posterior Inference and Uncertainty Quantification
 
@@ -207,6 +212,7 @@ To visualize the functional coefficient estimates along with their uncertainty, 
 
 ``` r
 library(ggplot2)
+# Plot the credible intervals
 plot.bfrs(fit_bfrs,include = "both")
 ```
 
@@ -217,6 +223,7 @@ plot.bfrs(fit_bfrs,include = "both")
 For scalar coefficients, we summarize their posterior distributions through the `summary_scalar.bfrs` function:
 
 ``` r
+# Summary of the scalar coefficients
 summary_scalar.bfrs(fit_bfrs)
 ```
 
@@ -249,6 +256,7 @@ Bayesian model diagnostics are crucial for assessing the quality of Markov Chain
 We can directly call the `traceplot` function to the Stan object `stanfit` and specify the parameters of interest. In the following example, we examine the convergence of the intercept parameter eta_0 and the scalar coefficients gamma.
 
 ``` r
+# Traceplot for checking the convergence
 traceplot(fit_bfrs$stanfit, pars = c("eta_0", "gamma"))
 ```
 
