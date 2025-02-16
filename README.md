@@ -1,4 +1,4 @@
-# refundBayes 0.2.0 Vignette
+# refundBayes: Bayesian Functional Regression using Stan
 
 ## 2025-02-03
 
