@@ -1,3 +1,14 @@
+#' This document describes functions for building the Stan code.
+#'
+#'
+
+
+#----------------------------------------------------------------------------
+#' Building the Stan code for SoFR.
+#----------------------------------------------------------------------------
+
+
+
 brfs_code_model=function(formula,data,family,func_comp,intercept){
 
   result_code_model=paste0("model{ \n")
@@ -59,6 +70,10 @@ brfs_code_model=function(formula,data,family,func_comp,intercept){
 }
 
 
+#----------------------------------------------------------------------------
+#' Building the Stan code for FoSR.
+#----------------------------------------------------------------------------
+
 
 bfrs_code_functional=function(formula,standata,family,func_comp,intercept){
 
@@ -92,6 +107,13 @@ bfrs_code_functional=function(formula,standata,family,func_comp,intercept){
   result_code_model=paste0(result_code_model, "}\n")
   return(result_code_model)
 }
+
+
+
+#----------------------------------------------------------------------------
+#' Stan code for setting the priors.
+#----------------------------------------------------------------------------
+
 
 
 

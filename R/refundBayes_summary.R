@@ -1,3 +1,6 @@
+#----------------------------------------------------------------------------
+#' Generate the summary table for the Bayesian model
+#'
 #' @export summary.bfrs
 #' @export summary_scalar.bfrs
 

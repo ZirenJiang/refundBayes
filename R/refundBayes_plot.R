@@ -1,3 +1,6 @@
+#----------------------------------------------------------------------------
+#' Plot the estimated functional coefficients with the corresponding credible interval
+#'
 #' @import ggplot2
 #' @import dplyr
 #' @export plot.bfrs

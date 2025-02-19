@@ -1,3 +1,14 @@
+#' This document describes functions for building the data that is used for Stan.
+#'
+#'
+
+
+
+#----------------------------------------------------------------------------
+#' Construct data that is used for Stan
+#----------------------------------------------------------------------------
+
+
 brfs_data=function(formula,data,family,func_comp,intercept,cens=NULL,func_parameter=NULL){
 
   trans.mat=list()
@@ -314,6 +325,7 @@ brfs_scalar_pred=function(term, data){
   }
 
 }
+
 
 brfs_func_pred_obs=function(term, data){
   if(term[[1]]=="s"){

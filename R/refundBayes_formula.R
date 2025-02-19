@@ -1,3 +1,34 @@
+#----------------------------------------------------------------------------
+#' General functional for recongnizing the formula input of refundBayes
+#----------------------------------------------------------------------------
+
+brfs_formula=function(formula){
+  formula_val=brms::brmsformula(formula)
+
+  y_var=formula_val$formula[[2]]
+
+
+
+  if(class(formula_val$formula[[3]])=="name"){
+    return(list(scalar_var=list(formula_val$formula[[3]]),
+                func_var=list(),
+                y_var=y_var))
+  }else{
+    var_extract=extract_var(formula_val$formula[[3]])
+    return(list(scalar_var=var_extract$scalar_var,
+                func_var=var_extract$func_var,
+                y_var=y_var))
+  }
+
+
+
+}
+
+
+
+#----------------------------------------------------------------------------
+#' Whether the object is a functional object with smoothness
+#----------------------------------------------------------------------------
 
 is.func.cov=function(term){
   func=FALSE
@@ -18,6 +49,10 @@ is.func.cov=function(term){
   }
   return(func)
 }
+
+#----------------------------------------------------------------------------
+#' Extract the scalar predictors and functional predictors
+#----------------------------------------------------------------------------
 
 extract_var=function(term){
   scalar_var=list()
@@ -97,25 +132,3 @@ extract_var=function(term){
 
 
 
-
-brfs_formula=function(formula){
-  formula_val=brms::brmsformula(formula)
-
-  y_var=formula_val$formula[[2]]
-
-
-
-  if(class(formula_val$formula[[3]])=="name"){
-    return(list(scalar_var=list(formula_val$formula[[3]]),
-                func_var=list(),
-                y_var=y_var))
-  }else{
-    var_extract=extract_var(formula_val$formula[[3]])
-    return(list(scalar_var=var_extract$scalar_var,
-                func_var=var_extract$func_var,
-                y_var=y_var))
-  }
-
-
-
-}
