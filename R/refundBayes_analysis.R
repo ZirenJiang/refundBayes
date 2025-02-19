@@ -1,3 +1,15 @@
+#----------------------------------------------------------------------------
+#'
+#' This document describes ancillary functions for refundBayes package that is used for data process.
+#'
+#'
+
+
+#----------------------------------------------------------------------------
+#' Construct the spline basis according to the spline type and functional data
+#' For now, only used for FoSR.
+#----------------------------------------------------------------------------
+
 brfs_extract_basis=function(formula,data,func_comp){
   sp_basis=list()
   for(i in 1:length(func_comp)){
@@ -14,6 +26,11 @@ brfs_extract_basis=function(formula,data,func_comp){
 
   return(sp_basis)
 }
+
+
+#----------------------------------------------------------------------------
+#' Extract basis for cubic regression spline
+#----------------------------------------------------------------------------
 
 
 brfs_extract_basis_cr=function(term,data){
@@ -142,62 +159,9 @@ brfs_extract_basis_cr=function(term,data){
 
 
 
-brfs_effect=function(basis,fit.samp,func_comp,trans.mat){
-  sp_samp=list()
-  for(inx in 1:length(func_comp)){
-    eigendecomp=basis[[inx]][["eigendecomp"]]
-    base_mat=basis[[inx]][["base_mat"]]
-    E=basis[[inx]][["E"]]
-
-    para=cbind(fit.samp[[paste0("br_",inx)]],fit.samp[[paste0("bf_",inx)]])
-    para.trans=para %*% trans.mat[[inx]]
-    para.trans.untilde=para.trans
-
-    for(i in 1:nrow(para.trans)){
-      para.trans.untilde[i,]=(eigendecomp$vectors %*% diag(1/E)) %*% matrix(para.trans[i,],ncol=1)
-    }
-
-    curve_est=matrix(ncol = nrow(base_mat),nrow = nrow(para.trans.untilde))
-
-
-    for(i in 1:nrow(curve_est)){
-      curve_est[i,]=base_mat%*%para.trans.untilde[i,]
-    }
-
-    sp_samp[[inx]]=curve_est
-  }
-
-  return(sp_samp)
-}
-
-
-bfrs_effect_functional=function(basis,b.samp){
-  sp_samp=list()
-  for(inx in 1:length(func_comp)){
-    eigendecomp=basis[[inx]][["eigendecomp"]]
-    base_mat=basis[[inx]][["base_mat"]]
-    E=basis[[inx]][["E"]]
-
-    para=cbind(fit.samp[[paste0("br_",inx)]],fit.samp[[paste0("bf_",inx)]])
-    para.trans=para %*% trans.mat[[inx]]
-    para.trans.untilde=para.trans
-
-    for(i in 1:nrow(para.trans)){
-      para.trans.untilde[i,]=(eigendecomp$vectors %*% diag(1/E)) %*% matrix(para.trans[i,],ncol=1)
-    }
-
-    curve_est=matrix(ncol = nrow(base_mat),nrow = nrow(para.trans.untilde))
-
-
-    for(i in 1:nrow(curve_est)){
-      curve_est[i,]=base_mat%*%para.trans.untilde[i,]
-    }
-
-    sp_samp[[inx]]=curve_est
-  }
-
-  return(sp_samp)
-}
+#----------------------------------------------------------------------------
+#' Extract basis for cyclic cubic regression spline
+#----------------------------------------------------------------------------
 
 
 brfs_extract_basis_cc=function(term,data){
@@ -322,5 +286,74 @@ brfs_extract_basis_cc=function(term,data){
   return(list(E=E,
               eigendecomp=eigendecomp,
               base_mat=base_mat))
+}
+
+
+
+#----------------------------------------------------------------------------
+#' Construct the SoFR fitted functional coefficient according to Stan posterior sampling
+#----------------------------------------------------------------------------
+
+
+
+brfs_effect=function(basis,fit.samp,func_comp,trans.mat){
+  sp_samp=list()
+  for(inx in 1:length(func_comp)){
+    eigendecomp=basis[[inx]][["eigendecomp"]]
+    base_mat=basis[[inx]][["base_mat"]]
+    E=basis[[inx]][["E"]]
+
+    para=cbind(fit.samp[[paste0("br_",inx)]],fit.samp[[paste0("bf_",inx)]])
+    para.trans=para %*% trans.mat[[inx]]
+    para.trans.untilde=para.trans
+
+    for(i in 1:nrow(para.trans)){
+      para.trans.untilde[i,]=(eigendecomp$vectors %*% diag(1/E)) %*% matrix(para.trans[i,],ncol=1)
+    }
+
+    curve_est=matrix(ncol = nrow(base_mat),nrow = nrow(para.trans.untilde))
+
+
+    for(i in 1:nrow(curve_est)){
+      curve_est[i,]=base_mat%*%para.trans.untilde[i,]
+    }
+
+    sp_samp[[inx]]=curve_est
+  }
+
+  return(sp_samp)
+}
+
+#----------------------------------------------------------------------------
+#' Construct the FoSR fitted functional coefficient according to Stan posterior sampling
+#----------------------------------------------------------------------------
+
+
+bfrs_effect_functional=function(basis,b.samp){
+  sp_samp=list()
+  for(inx in 1:length(func_comp)){
+    eigendecomp=basis[[inx]][["eigendecomp"]]
+    base_mat=basis[[inx]][["base_mat"]]
+    E=basis[[inx]][["E"]]
+
+    para=cbind(fit.samp[[paste0("br_",inx)]],fit.samp[[paste0("bf_",inx)]])
+    para.trans=para %*% trans.mat[[inx]]
+    para.trans.untilde=para.trans
+
+    for(i in 1:nrow(para.trans)){
+      para.trans.untilde[i,]=(eigendecomp$vectors %*% diag(1/E)) %*% matrix(para.trans[i,],ncol=1)
+    }
+
+    curve_est=matrix(ncol = nrow(base_mat),nrow = nrow(para.trans.untilde))
+
+
+    for(i in 1:nrow(curve_est)){
+      curve_est[i,]=base_mat%*%para.trans.untilde[i,]
+    }
+
+    sp_samp[[inx]]=curve_est
+  }
+
+  return(sp_samp)
 }
 
