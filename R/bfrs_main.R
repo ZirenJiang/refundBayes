@@ -36,34 +36,28 @@ bfrs <- function(formula, data, family = gaussian(), joint_FPCA=NULL,
   # Currently support family
   family_list=c("gaussian", "binomial", "Cox", "functional")
 
+  # Check the input arguments
   if(is.null(joint_FPCA)){
     func_comp=F
   }else{
     func_comp=joint_FPCA
   }
-
   if(class(family)=="family"){
     family=family$family
   }
-
   if(!family %in% family_list){
     stop(paste0("Family should be one of the following arguments: gaussian, binomial, Cox, functional!"))
   }
-
   formula_use = brfs_formula(formula)
-
   if ((length(formula_use$func_var)!=length(func_comp))&(family!="functional")) {
     stop("Length of func_comp must be the total number of functional predictors!")
   }
 
+  # Construct the Stan data and code
   brfs_datafit=brfs_data(formula_use,data,family,func_comp,intercept,cens=cens,func_parameter=func_parameter)
-
   Standata_use=brfs_datafit$standata
-
   Stancode_data=brfs_datafit$stancode_data
-
   Stancode_para=brfs_datafit$stancode_para
-
   Stancode_transpara=brfs_datafit$stancode_transpara
 
   if(family!="functional"){
@@ -74,16 +68,11 @@ bfrs <- function(formula, data, family = gaussian(), joint_FPCA=NULL,
     }else{
       Stancode_transdata="transformed data {\n}"
     }
-
     Stancode_model=brfs_code_model(formula_use,data,family,func_comp,intercept)
-
   }else{
     Stancode_model=bfrs_code_functional(formula_use,Standata_use,family,func_comp,intercept)
     Stancode_transdata="transformed data {\n}"
-
   }
-
-
   if(family=="Cox"){
     Stancode_function=paste0("functions {\n   real cox_log_lhaz(real y, real log_mu, real bhaz, real cbhaz) {\n   ")
     Stancode_function=paste0(Stancode_function, "   return log(bhaz) + log_mu;\n   }\n")
@@ -97,13 +86,6 @@ bfrs <- function(formula, data, family = gaussian(), joint_FPCA=NULL,
   }else{
     Stancode_function=NULL
   }
-
-
-
-
-
-
-
   Stancode_use=paste0(Stancode_function,
                       Stancode_data,"\n",
                       Stancode_transdata,"\n",
@@ -111,13 +93,12 @@ bfrs <- function(formula, data, family = gaussian(), joint_FPCA=NULL,
                       Stancode_transpara, "\n",
                       Stancode_model)
 
+  # Run the Stan program
   if(runStan){
     fit <- stan(model_code=Stancode_use,data=Standata_use,iter = n.iter,warmup = n.warmup,chain=n.knots,cores = n.knots)
     if(family!="functional"){
       func_effect_basis=brfs_extract_basis(formula_use,data,func_comp)
-
       fit.samp = rstan::extract(fit, permuted = TRUE)
-
       func_effect=brfs_effect(basis = func_effect_basis,
                               fit.samp=fit.samp,
                               func_comp=func_comp,
@@ -125,15 +106,11 @@ bfrs <- function(formula, data, family = gaussian(), joint_FPCA=NULL,
     }else{
       func_effect_basis=Standata_use$phi
       fit.samp = rstan::extract(fit, permuted = TRUE)
-
       func_effect_est=apply(fit.samp$b,c(1,2),function(x){
         x%*%func_effect_basis
       })
-
-      #func_effect=apply(func_effect_est,c(1,3),mean)
       func_effect=func_effect_est
     }
-
   }else{
     fit = NA
     if(family!="functional"){
@@ -148,12 +125,6 @@ bfrs <- function(formula, data, family = gaussian(), joint_FPCA=NULL,
     }
   }
 
-
-
-
-
-
-
   return(list(stanfit = fit,
               spline_basis = func_effect_basis,
               Stancode = Stancode_use,
@@ -161,9 +132,6 @@ bfrs <- function(formula, data, family = gaussian(), joint_FPCA=NULL,
               func_effect = func_effect,
               family = family,
               scalar_pred = colnames(brfs_datafit$X_scalar)))
-
-
-
 }
 
 

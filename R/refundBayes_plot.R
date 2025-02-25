@@ -9,24 +9,18 @@ plot.bfrs=function(brfs.fit=NULL,prob = 0.95,include = "both"){
 
   if(brfs.fit$family=="functional"){
     plot.res=list()
-
     for(inx.effect in 1:dim(brfs.fit$func_effect)[3]){
       curve_est=brfs.fit$func_effect[,,inx.effect]
       mean.curve.est=apply(curve_est,1,mean)
       upper.curve.est.quantile=apply(curve_est,1,function(x){quantile(x,probs = (1+prob)/2)})
       lower.curve.est.quantile=apply(curve_est,1,function(x){quantile(x,probs = (1-prob)/2)})
-
-
-
       upper.curve.wald=upper.curve.est.quantile
       lower.curve.wald=lower.curve.est.quantile
 
       for(i in 1:length(upper.curve.wald)){
         upper.curve.wald[i]=mean.curve.est[i]+qnorm((1+prob)/2)*sd(curve_est[,i])
         lower.curve.wald[i]=mean.curve.est[i]-qnorm((1+prob)/2)*sd(curve_est[,i])
-        #print(sd(curve_est[,i]))
       }
-
       if(type=="quantile"){
         upper.curve.est = upper.curve.est.quantile
         lower.curve.est = lower.curve.est.quantile
@@ -37,9 +31,6 @@ plot.bfrs=function(brfs.fit=NULL,prob = 0.95,include = "both"){
         stop("Type should be either quantile or Wald!")
       }
 
-
-
-
       plotdata=data.frame(value=c(mean.curve.est,
                                   upper.curve.est,
                                   lower.curve.est),
@@ -49,70 +40,49 @@ plot.bfrs=function(brfs.fit=NULL,prob = 0.95,include = "both"){
                           type=c(rep("mean",length(upper.curve.est)),
                                  rep("upper",length(upper.curve.est)),
                                  rep("lower",length(upper.curve.est))))
-
       plot.res[[inx.effect]]=ggplot(plotdata,aes(y=value,x=xmat))+geom_line(aes(type=type,color=type))+
         ylab(colnames(brfs.fit$Standata[["X_s"]])[inx.effect])
     }
   }else{
     n.func.coeff=length(brfs.fit$func_effect)
-
     plot.res=list()
-
     for(inx.effect in 1:n.func.coeff){
       curve_est=brfs.fit$func_effect[[inx.effect]]
       mean.curve.est=apply(curve_est,2,mean)
       upper.curve.est.quantile=apply(curve_est,2,function(x){quantile(x,probs = (1+prob)/2)})
       lower.curve.est.quantile=apply(curve_est,2,function(x){quantile(x,probs = (1-prob)/2)})
 
-
-
       if(include=="pointwise"){
         upper.curve.est = upper.curve.est.quantile
         lower.curve.est = lower.curve.est.quantile
-
         CMA.upper.curve.est = NA
         CMA.lower.curve.est = NA
       }
 
       if(include=="CMA"){
         func_coeff_sd=apply(curve_est,2,sd)
-
         func_coeff_extr=1:dim(curve_est)[1]
-
         func_coeff_est=apply(curve_est,2,mean)
-
         for(i in 1:dim(curve_est)[1]){
           func_coeff_extr[i]=max(abs(curve_est[i,]-func_coeff_est)/func_coeff_sd)
         }
-
         cutpoint=quantile(func_coeff_extr,probs = prob)
-
         CMA.upper.curve.est = mean.curve.est + cutpoint*func_coeff_sd
-
         CMA.lower.curve.est = mean.curve.est - cutpoint*func_coeff_sd
-
         upper.curve.est = NA
         lower.curve.est = NA
       }
 
-
       if(include=="both"){
         func_coeff_sd=apply(curve_est,2,sd)
-
         func_coeff_extr=1:dim(curve_est)[1]
-
         func_coeff_est=apply(curve_est,2,mean)
-
         for(i in 1:dim(curve_est)[1]){
           func_coeff_extr[i]=max(abs(curve_est[i,]-func_coeff_est)/func_coeff_sd)
         }
-
         cutpoint=quantile(func_coeff_extr,probs = prob)
-
         CMA.upper.curve.est = mean.curve.est + cutpoint*func_coeff_sd
-
         CMA.lower.curve.est = mean.curve.est - cutpoint*func_coeff_sd
-
         upper.curve.est = upper.curve.est.quantile
         lower.curve.est = lower.curve.est.quantile
       }
@@ -134,12 +104,8 @@ plot.bfrs=function(brfs.fit=NULL,prob = 0.95,include = "both"){
         ylab("Functional Effect") +facet_wrap(~ Method)+
         scale_fill_manual(values = c("Pointwise CI" = "darkgrey", "CMA CI" = "lightgrey"), name = "Interval Type") +
         theme_minimal()
-
     }
-
-
   }
-
   return(plot.res)
 }
 
