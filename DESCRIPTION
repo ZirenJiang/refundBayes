@@ -1,38 +1,30 @@
 Package: refundBayes
 Encoding: UTF-8
 Type: Package
-Title: Bayesian Functional Data Regression
-Version: 0.2
-Date: 2025-02-05
+Title: Bayesian Regression with Functional Data
+Version: 0.3
+Date: 2025-11-22
 Authors@R:
    c(person("Ziren", "Jiang", email = "jian0746@umn.edu",
              role = c("aut", "cre")),
-      person("Erjia", "Cui", role = c("ctb")),
+      person("Erjia", "Cui", role = c("aut")),
       person("Ciprian", "Crainiceanu", role = c("ctb")))
 Depends:
     R (>= 3.6.0),
-    Rcpp (>= 0.12.0),
-    rstan (>= 2.29.0),
-    methods,
-    parallel,
-    refund,
-    scam,
-    splines2,
-    stats
 Imports:
+    brms,
+    dplyr,
     ggplot2 (>= 2.0.0),
-    Rcpp (>= 0.12.0),
-    rstan (>= 2.29.0),
-    parallel,
+    mgcv,
     refund,
-    scam,
+    rstan (>= 2.29.0),
     splines2,
     stats
-Description: 
+Description: Bayesian regression with function data, including scalar-on-function regression
 LazyData: true
 NeedsCompilation: no
 License: GPL-2
-URL: 
+URL: https://github.com/ecui1/refundBayes
 BugReports: 
 Additional_repositories:
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3
