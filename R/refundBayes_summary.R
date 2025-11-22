@@ -2,7 +2,6 @@
 #' Generate the summary table for the Bayesian model
 #'
 #' @export summary.bfrs
-#' @export summary_scalar.bfrs
 
 summary.bfrs = function(brfs.fit=NULL,prob = 0.95){
   res = list()
