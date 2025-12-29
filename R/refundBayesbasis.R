@@ -4,7 +4,9 @@
 #----------------------------------------------------------------------------
 #' The main function for extracting the spline basis from data based on formula
 #----------------------------------------------------------------------------
-
+#' @keywords internal
+#' @noRd
+#' 
 extract_basis = function(formula, data, func_comp){ ## currently only support "cc" and "cr"
   sp_basis <- list()
   for(i in 1:length(func_comp)){
@@ -22,7 +24,9 @@ extract_basis = function(formula, data, func_comp){ ## currently only support "c
 #----------------------------------------------------------------------------
 #' Extract basis for cubic regression spline ("cr")
 #----------------------------------------------------------------------------
-
+#' @keywords internal
+#' @noRd
+#' 
 extract_basis_cr = function(term, data){
   bymat <- data[[term[["by"]][[3]]]]
   curr_term <- term[["by"]]
@@ -32,6 +36,7 @@ extract_basis_cr = function(term, data){
     print(curr_term[[3]])
   }
   bymat <- bymat * data[[curr_term[[2]]]]
+  object = 1
   eval(parse(text = paste0("object = ", format(term))))
   knots <- NULL
   dk <- ExtractData(object, data, knots) ## organize data as input for smooth.construct-type functions
@@ -102,7 +107,9 @@ extract_basis_cr = function(term, data){
 #----------------------------------------------------------------------------
 #' Extract basis for cyclic cubic regression spline ("cc")
 #----------------------------------------------------------------------------
-
+#' @keywords internal
+#' @noRd
+#' 
 extract_basis_cc = function(term, data){
   bymat <- data[[term[["by"]][[3]]]]
   curr_term <- term[["by"]]
@@ -112,6 +119,7 @@ extract_basis_cc = function(term, data){
     print(curr_term[[3]])
   }
   bymat <- bymat * data[[curr_term[[2]]]]
+  object = 1
   eval(parse(text = paste0("object = ", format(term))))
   knots <- NULL
   dk <- ExtractData(object,data,knots)

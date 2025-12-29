@@ -4,7 +4,8 @@
 #----------------------------------------------------------------------------
 #' The main function for constructing the data and code used as input for Stan
 #----------------------------------------------------------------------------
-
+#' @keywords internal
+#' @noRd
 refundBayesdata = function(formula, data, family, 
                            func_comp, intercept, 
                            cens = NULL, func_parameter = NULL){
@@ -43,7 +44,7 @@ refundBayesdata = function(formula, data, family,
     result[["real_inter"]] <- 0
     result_code_data <- paste0(result_code_data, "   real real_inter;\n")
     
-    result[["cens"]] <- data[[cens]]
+    result[["cens"]] <- cens
     result_code_data <- paste0(result_code_data, "   //Indicator variable for censoring  \n")
     result_code_data <- paste0(result_code_data, "   array[N_num] int<lower=-1,upper=2> cens;\n")
     
@@ -106,6 +107,7 @@ refundBayesdata = function(formula, data, family,
     
     data_temp <- data.frame(inx = 1:NROW(data))
     data_temp[["yindex.vec"]] <- matrix(rep(1:dim(data[[formula$y_var]])[2], NROW(data)), nrow = NROW(data))
+    object = 1
     obj_exp <- paste0("object=s(yindex.vec, bs = \"",func_parameter[["type"]],"\", k =",func_parameter[["df"]],")")
     
     eval(parse(text = obj_exp))
@@ -231,7 +233,9 @@ refundBayesdata = function(formula, data, family,
 #----------------------------------------------------------------------------
 #' A function for extracting the data for the scalar predictors and organize them as input for Stan
 #----------------------------------------------------------------------------
-
+#' @keywords internal
+#' @noRd
+#' 
 ext_scalar_pred = function(term, data){
   if(length(term) == 0){
     return(NULL)
@@ -243,9 +247,9 @@ ext_scalar_pred = function(term, data){
         for(k in 2:length(term[[i]])){
           term_now <- paste0(term_now, "*", term[[i]][[k]])
         }
-        X_itm <- stats::model.matrix(as.formula(paste0("~", term_now)), data = data)
+        X_itm <- stats::model.matrix(stats::as.formula(paste0("~", term_now)), data = data)
       }else{ ## if there are just additive terms
-        X_itm <- stats::model.matrix(as.formula(paste0("~", term[[i]])), data = data)
+        X_itm <- stats::model.matrix(stats::as.formula(paste0("~", term[[i]])), data = data)
         term_now <- term[[i]]
       }
       
@@ -271,10 +275,13 @@ ext_scalar_pred = function(term, data){
 #----------------------------------------------------------------------------
 #' A function for extracting the data for the functional predictors and organize them as input for Stan
 #----------------------------------------------------------------------------
-
+#' @keywords internal
+#' @noRd
+#' 
 ext_func_pred_obs = function(term, data){
   if(term[[1]] == "s"){ ## currently only support s() as a functional term input
     obj <- format(term)
+    sm = 1
     eval(parse(text = paste0("sm = mgcv:::smoothCon(",obj,", data = data, absorb.cons = TRUE, diagonal.penalty = TRUE)")))
     re <- mgcv::smooth2random(sm[[1]], names(data), type = 2)
     Xr <- re$rand$Xr

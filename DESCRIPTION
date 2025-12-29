@@ -20,11 +20,10 @@ Imports:
     rstan (>= 2.29.0),
     splines2,
     stats
-Description: Bayesian regression with function data, including scalar-on-function regression
+Description: Bayesian regression with function data, including scalar-on-function regression,function-on-scalar, and survival models with functional covariates.
 LazyData: true
 NeedsCompilation: no
 License: GPL-2
 URL: https://github.com/ecui1/refundBayes
-BugReports: 
 Additional_repositories:
 RoxygenNote: 7.3.3

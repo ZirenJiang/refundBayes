@@ -179,15 +179,14 @@ library(refundBayes)
 
 ``` r
 # The bfrs function takes a similar formula syntax to that in the gam function.
-fit_bfrs = refundBayes::bfrs(five_year_mort ~ age + gender + race + BMI + PIR + CHD + education + 
-      s(tmat,  by = lmat * MIMS, bs = "cc", k = 10), 
-      data = nhanes_lite_use, 
-      family = binomial(), 
-      runStan = TRUE, # Whether automatically run Stan program. 
-      n.iter = 1500, # Total number of posterior sampling.
-      n.warmup = 500, # Burn-in value.
-      n.knots = 3 # Number of parallel computed chains for posterior sampling.
-      )
+fit_sofr <- sofr_bayes(five_year_mort ~ age + gender + race + BMI + PIR + CHD + education +
+     s(tmat, by = lmat * MIMS, bs = "cc", k = 10),
+     data     = nhanes_lite_use,
+     family   = binomial(),
+     runStan  = TRUE,
+     niter   = 1500,
+     nwarmup = 500
+)
 ```
 
 The `bfrs` function use the exact same syntax as the `gam` function for the functional regression model, data, and outcome type (family). Besides, it uses some additional arguments for the Stan:
@@ -213,7 +212,7 @@ To visualize the functional coefficient estimates along with their uncertainty, 
 ``` r
 library(ggplot2)
 # Plot the credible intervals
-plot.bfrs(fit_bfrs,include = "both")
+plot(fit_sofr,include = "both")
 ```
 
 ![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
@@ -224,42 +223,23 @@ For scalar coefficients, we summarize their posterior distributions through the 
 
 ``` r
 # Summary of the scalar coefficients
-summary_scalar.bfrs(fit_bfrs)
+summary(fit_sofr)[[1]]
 ```
 
 ```         
-##                   Scalar Predictor        mean 0.025 quantile 0.975 quantile
-## 1                              age  0.06339974     0.05429191    0.072871075
-## 2                     genderFemale -0.06704014    -0.28404927    0.147635209
-## 3               raceOther Hispanic  0.10704227    -0.48637531    0.690766799
-## 4           raceNon-Hispanic White  0.64344779     0.19482219    1.125535658
-## 5           raceNon-Hispanic Black  0.44805388    -0.02620712    0.949391515
-## 6           raceNon-Hispanic Asian -0.26542926    -0.94152303    0.399010719
-## 7                   raceOther Race  0.72476926    -0.07119212    1.501833618
-## 8                              BMI -0.02308347    -0.03929492   -0.007268227
-## 9                              PIR -0.16456147    -0.24308198   -0.087122168
-## 10                          CHDYes  0.56986704     0.26214795    0.875871527
-## 11                   CHDDon't know  1.33141402     0.35858958    2.282130456
-## 12 educationHigh school equivalent -0.14459417    -0.42754024    0.136299180
-## 13  educationMore than high school -0.36791207    -0.63842451   -0.096276536
-## 14             educationDon't know  2.20221291    -0.41626029    5.690466185
+##                  Scalar Predictor        mean 0.025 quantile 0.975 quantile
+## 1                              age  0.06337393     0.05458013    0.072040792
+## 2                     genderFemale -0.06199886    -0.27936916    0.157995608
+## 3               raceOther Hispanic  0.10092165    -0.48599420    0.692193724
+## 4           raceNon-Hispanic White  0.63742628     0.20515976    1.120063227
+## 5           raceNon-Hispanic Black  0.44020062    -0.03838770    0.940556823
+## 6           raceNon-Hispanic Asian -0.28069220    -0.96618002    0.337431446
+## 7                   raceOther Race  0.71941280    -0.05751275    1.478630197
+## 8                              BMI -0.02331439    -0.03950182   -0.007373535
+## 9                              PIR -0.16500340    -0.24031536   -0.088812636
+## 10                          CHDYes  0.57221536     0.28285920    0.871791445
+## 11                   CHDDon't know  1.34511955     0.34465840    2.309125591
+## 12 educationHigh school equivalent -0.14543798    -0.42143180    0.126768684
+## 13  educationMore than high school -0.36408213    -0.64386679   -0.102800062
+## 14             educationDon't know  2.18903895    -0.35621317    5.549752727
 ```
-
-The following plot compares the estimated functional coefficient between the frequentist and Bayesian methods.
-
-![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
-
-### Bayesian model diagnostic
-
-Bayesian model diagnostics are crucial for assessing the quality of Markov Chain Monte Carlo (MCMC) sampling. The `refundBayes` package also allows users to check the convergence of the Stan posterior sampling through the trace plot. Trace plots visualize the evolution of MCMC samples across iterations and help identify issues such as poor mixing or slow convergence. A well-mixed trace plot should resemble a "hairy caterpillar," with no obvious trends or drifts.
-
-We can directly call the `traceplot` function to the Stan object `stanfit` and specify the parameters of interest. In the following example, we examine the convergence of the intercept parameter eta_0 and the scalar coefficients gamma.
-
-``` r
-# Traceplot for checking the convergence
-traceplot(fit_bfrs$stanfit, pars = c("eta_0", "gamma"))
-```
-
-![](refundBayes_Vignette_Combine_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
-
-The trace plot indicates a good convergence of the posterior sampling for the parameters.

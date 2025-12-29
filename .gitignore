@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
+refundBayes_test.rmd
+refundBayes_Vignette_Combine.rmd

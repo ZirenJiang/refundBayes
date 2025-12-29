@@ -4,6 +4,8 @@
 #----------------------------------------------------------------------------
 #' The function for reconstructing the SoFR fitted functional coefficient according to Stan posterior sampling
 #----------------------------------------------------------------------------
+#' @keywords internal
+#' @noRd
 
 recon_fun_coef = function(basis, fit.samp, func_comp, trans.mat){
   sp_samp <- list()
@@ -29,8 +31,10 @@ recon_fun_coef = function(basis, fit.samp, func_comp, trans.mat){
 #----------------------------------------------------------------------------
 #' The function for reconstructing the FoSR fitted functional coefficient according to Stan posterior sampling
 #----------------------------------------------------------------------------
-
-recon_fun_coef_fosr = function(basis, b.samp){
+#' @keywords internal
+#' @noRd
+#' 
+recon_fun_coef_fosr = function(basis, b.samp, func_comp, fit.samp, trans.mat){
   sp_samp <- list()
   for(inx in 1:length(func_comp)){
     eigendecomp <- basis[[inx]][["eigendecomp"]]

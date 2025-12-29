@@ -4,7 +4,9 @@
 #----------------------------------------------------------------------------
 #' The main function for building the model block for SoFR and functional Cox model.
 #----------------------------------------------------------------------------
-
+#' @keywords internal
+#' @noRd
+#' 
 refundBayesmodel = function(formula, data, family, func_comp, intercept){
   result_code_model <- paste0("model{ \n")
   result_code_model <- paste0(result_code_model, "   vector[N_num] mu = rep_vector(0.0, N_num);\n")
@@ -17,15 +19,22 @@ refundBayesmodel = function(formula, data, family, func_comp, intercept){
   if(length(formula$scalar_var) > 0){ ## add scalar predictors
     result_code_model <- paste0(result_code_model, "+ X_sc * gamma")
   }
-  
-  for(i in 1:length(func_comp)){
-    if(func_comp[i]){
-      
-    }
-    if(!func_comp[i]){ ## add functional predictors
-      result_code_model <- paste0(result_code_model, "+ ",paste0("X_mat_r_",i)," * ",paste0("br_",i),"+ ",paste0("X_mat_f_",i)," * ",paste0("bf_",i))
+  if(is.null(func_comp)){ ## Do not have any functional predictor
+    
+  }else{
+    for(i in 1:length(func_comp)){
+      if(func_comp[i]){
+        
+      }
+      if(!func_comp[i]){ ## add functional predictors
+        result_code_model <- paste0(result_code_model, "+ ",paste0("X_mat_r_",i)," * ",paste0("br_",i),"+ ",paste0("X_mat_f_",i)," * ",paste0("bf_",i))
+      }
     }
   }
+  
+  
+  
+  
   result_code_model <- paste0(result_code_model, ";\n")
   
   ## specify the likelihood for different outcome distributions
@@ -56,7 +65,9 @@ refundBayesmodel = function(formula, data, family, func_comp, intercept){
 #----------------------------------------------------------------------------
 #' The main function for building the model block for FoSR.
 #----------------------------------------------------------------------------
-
+#' @keywords internal
+#' @noRd
+#' 
 refundBayesmodel_functional = function(formula, standata, family, func_comp, intercept){
   result_code_model <- paste0("model{ \n")
   result_code_model <- paste0(result_code_model, "   //Linear predictor\n")
@@ -88,8 +99,11 @@ refundBayesmodel_functional = function(formula, standata, family, func_comp, int
 #----------------------------------------------------------------------------
 #' A convenient function for setting the priors.
 #----------------------------------------------------------------------------
-
+#' @keywords internal
+#' @noRd
+#' 
 set_prior = function(formula, data, family, func_comp, intercept){
+  result_code_model = ""
   if(intercept){ ## priors for the intercept term eta_0
     if(family == "gaussian"){
       result_code_model <- paste0("   target += normal_lpdf(eta_0 | plocation, pscale);\n")
@@ -102,13 +116,17 @@ set_prior = function(formula, data, family, func_comp, intercept){
       result_code_model <- paste0(result_code_model, "   target += dirichlet_lpdf(c | con_sbhaz);\n")
     }
   }
-  for(i in 1:length(func_comp)){
-    if(func_comp[i]){
-      
-    }
-    if(!func_comp[i]){ ## priors for the random effect coefficients zbr and sigmabr
-      result_code_model <- paste0(result_code_model,"   target += std_normal_lpdf(", paste0("zbr_",i),");\n")
-      result_code_model <- paste0(result_code_model,"   target += inv_gamma_lpdf(", paste0("sigmabr_",i),"^2 | 0.0005,0.0005);\n")
+  if(is.null(func_comp)){ ## Do not have any functional predictor
+    
+  }else{
+    for(i in 1:length(func_comp)){
+      if(func_comp[i]){
+        
+      }
+      if(!func_comp[i]){ ## priors for the random effect coefficients zbr and sigmabr
+        result_code_model <- paste0(result_code_model,"   target += std_normal_lpdf(", paste0("zbr_",i),");\n")
+        result_code_model <- paste0(result_code_model,"   target += inv_gamma_lpdf(", paste0("sigmabr_",i),"^2 | 0.0005,0.0005);\n")
+      }
     }
   }
   return(result_code_model)
