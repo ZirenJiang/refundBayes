@@ -25,7 +25,7 @@ The `refundBayes` package can be installed from the source file available in thi
 install.packages(c("refund","splines2","scam","rstan"))
 
 # Install refundBayes from the source file
-install.packages("refundBayes_0.2.tar.gz", type = "source", repos = NULL)
+install.packages("refundBayes_0.3.tar.gz", type = "source", repos = NULL)
 ```
 
 ### Prepare the NHANES Dataset
