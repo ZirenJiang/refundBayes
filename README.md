@@ -108,7 +108,7 @@ Here, we briefly explain the syntax of the `gam` function for the scalar-on-func
 
 #### Visualization for the Functional Coefficients
 
-The `plot.gam` function provides a visual representation of the estimated functional coefficient along with pointwise confidence intervals, which are useful for understanding the variability of the estimated effect at each time point. The pointwise confidence interval can be directly obtained through `plot.gam`. However, to obtain the correlation and multiplicity adjusted (CMA) confidence interval, we need to manually calculate using the joint distribution of the estimated parameters, see [Crainiceanu, Goldsmith, Leroux, and Cui 2024](https://functionaldataanalysis.org/) for more detail. 
+The `plot.gam` function provides a visual representation of the estimated functional coefficient along with pointwise confidence intervals, which are useful for understanding the variability of the estimated effect at each time point. The pointwise confidence interval can be directly obtained through `plot.gam`. However, to obtain the correlation and multiplicity adjusted (CMA) confidence interval, we need to manually calculate using the joint distribution of the estimated parameters, see [Crainiceanu, Goldsmith, Leroux, and Cui 2024](https://functionaldataanalysis.org/) for more detail.
 
 ``` r
 # Compute the pointwise confidence interval for the functional coefficient  

@@ -96,15 +96,13 @@ refundBayesdata = function(formula, data, family,
   
   if(family == "functional"){
     ## for FoSR
-    result[["T"]] <- dim(data[[formula$y_var]])[2]
-    result_code_data <- paste0(result_code_data, "   //Number of observed time points\n")
-    result_code_data <- paste0(result_code_data, "   int<lower=1> T;\n")
+    result[["M_num"]] <- dim(data[[formula$y_var]])[2]
+    result_code_data <- paste0(result_code_data, "   int<lower=1> M_num; // Total number of observed functional time point\n")
     
-    result[["Y"]] <- data[[formula$y_var]]
-    result_code_data <- paste0(result_code_data, "   //Functional outcome for FoSR\n")
-    result_code_data <- paste0(result_code_data, "   matrix[N_num, T] Y;\n")
+    result[["Y_mat"]] <- data[[formula$y_var]]
+    result_code_data <- paste0(result_code_data, "   matrix[N_num, M_num] Y_mat; // Functional response\n")
+    
     freq.fpca <- refund::fpca.face(unclass(data[[formula$y_var]]))
-    
     data_temp <- data.frame(inx = 1:NROW(data))
     data_temp[["yindex.vec"]] <- matrix(rep(1:dim(data[[formula$y_var]])[2], NROW(data)), nrow = NROW(data))
     object = 1
@@ -120,47 +118,36 @@ refundBayesdata = function(formula, data, family,
     maS <- norm(beta.S) / maXX
     beta.S = beta.S / maS
     
-    result[["ncol_phi"]] <- dim(beta.base)[2]
-    result_code_data <- paste0(result_code_data, "   //Number of FPCA eigenfunctions\n")
-    result_code_data <- paste0(result_code_data, "   int ncol_phi; \n")
+    result[["J_num"]] <- ifelse(is.null(dim(freq.fpca$efunctions)[2]), 1, dim(freq.fpca$efunctions)[2])
+    result_code_data <- paste0(result_code_data, "    int<lower=1> J_num; // Number of FPCA eigenfunctions \n")
     
-    result[["phi"]] <- t(beta.base)
-    result_code_data <- paste0(result_code_data, "   //Matrix of FPCA eigenfunctions\n")
-    result_code_data <- paste0(result_code_data, "   matrix[ncol_phi, T] phi; \n")
+    result[["Phi_mat"]] <- t(freq.fpca$efunctions)
+    result_code_data <- paste0(result_code_data, "   matrix[J_num, M_num] Phi_mat; // Matrix of FPCA eigenfunctions \n")
     
-    result[["ncol_psi_mat"]] <- ifelse(is.null(dim(freq.fpca$efunctions)[2]), 1, dim(freq.fpca$efunctions)[2])
-    result_code_data <- paste0(result_code_data, "   //Number of spline basis\n")
-    result_code_data <- paste0(result_code_data, "   int ncol_psi_mat; \n")
+    #result[["K_num"]] <- ifelse(is.null(dim(freq.fpca$efunctions)[2]), 1, dim(freq.fpca$efunctions)[2])
+    result[["K_num"]] <- dim(crspline.cons$X)[2]
+    result_code_data <- paste0(result_code_data, "   int<lower=1> K_num; // Number of spline basis \n")
     
-    result[["psi_mat"]] <- t(freq.fpca$efunctions)
-    result_code_data <- paste0(result_code_data, "   //Matrix of spline basis\n")
-    result_code_data <- paste0(result_code_data, "   matrix[ncol_psi_mat, T] psi_mat;  \n")
+    result[["Psi_mat"]] <- t(crspline.cons$X)
+    result_code_data <- paste0(result_code_data, "   matrix[K_num, M_num] Psi_mat; // Matrix of spline basis  \n")
     
-    result[["S_beta"]] <- beta.S
-    result_code_data <- paste0(result_code_data, "   //Penalty matrix\n")
-    result_code_data <- paste0(result_code_data, "   matrix[ncol_phi, ncol_phi] S_beta;  \n")
+    result[["S_mat"]] <- beta.S
+    result_code_data <- paste0(result_code_data, "   matrix[K_num, K_num] S_mat; // Penalty matrix  \n")
     
-    result[["K_num"]] <- NCOL(X_scalar)
+    result[["P_num"]] <- NCOL(X_scalar)
     result_code_data <- paste0(result_code_data, "   //Number of scalar predictors\n")
-    result_code_data <- paste0(result_code_data, "   int<lower=0> K_num;\n")
+    result_code_data <- paste0(result_code_data, "   int<lower=0> P_num;\n")
     
     if(!is.null(X_scalar)){
-      result[["Z_mat"]] <- X_scalar
-      result_code_data <- paste0(result_code_data, "   //Matrix of scalar predictors\n")
-      result_code_data <- paste0(result_code_data, "   matrix[N_num,K_num] Z_mat;\n")
+      result[["X_mat"]] <- X_scalar
+      result_code_data <- paste0(result_code_data, "   matrix[N_num, P_num] X_mat; // Design matrix for the scalar predictor\n")
       
-      result_code_para <- paste0(result_code_para, "   //FPCA scores \n")
-      result_code_para <- paste0(result_code_para, "   matrix[N_num,ncol_psi_mat] zxi;\n")
-      result_code_para <- paste0(result_code_para, "   real<lower=0> sigma_epis;\n")
-      result_code_para <- paste0(result_code_para, "   //Smoothing parameters\n")
-      result_code_para <- paste0(result_code_para, "   vector<lower=0>[K_num] sigma_b;\n")
-      result_code_para <- paste0(result_code_para, "   vector<lower=0>[ncol_psi_mat] sigma_k;\n")
-      if(FALSE){
-        result_code_para <- paste0(result_code_para, "   row_vector[ncol_phi] b;\n")
-      }else{
-        result_code_para <- paste0(result_code_para, "   //Functional effect spline coefficients\n")
-        result_code_para <- paste0(result_code_para, "   matrix[K_num,ncol_phi] b;\n")
-      }
+      result_code_para <- paste0(result_code_para, "   matrix[K_num, P_num] beta; // Spline coefficients\n")
+      result_code_para <- paste0(result_code_para, "   matrix[N_num, J_num] xi; // FPCA Scores\n")
+      result_code_para <- paste0(result_code_para, "   real<lower=0> sigma_eps; // Standard deviation of independent error \n")
+      result_code_para <- paste0(result_code_para, "   vector<lower=0>[P_num] sigma; // Smoothing parameter\n")
+      result_code_para <- paste0(result_code_para, "   vector<lower=0>[J_num] lambda; // FPCA eigenvalues\n")
+      
     }
   }else{
     # For SoFR and Functional Cox
@@ -212,10 +199,14 @@ refundBayesdata = function(formula, data, family,
   result_code_transpara <- paste0(result_code_transpara, "}")
   
   ## Center all scalar variables before putting them to Stan #!!! how would you handle categorical variables?
-  if(length(formula$scalar_var) > 0){
-    result_code_transdata <- "transformed data {\n   matrix[N_num, K_num] X_sc;\n   vector[K_num] mean_Xs;\n   "
-    result_code_transdata <- paste0(result_code_transdata, "for (i in 1:K_num) {\n      mean_Xs[i] = mean(Z_mat[, i]);\n
+  if(family != "functional"){
+    if(length(formula$scalar_var) > 0){
+      result_code_transdata <- "transformed data {\n   matrix[N_num, K_num] X_sc;\n   vector[K_num] mean_Xs;\n   "
+      result_code_transdata <- paste0(result_code_transdata, "for (i in 1:K_num) {\n      mean_Xs[i] = mean(Z_mat[, i]);\n
                                  X_sc[, i] = Z_mat[, i] - mean_Xs[i];\n   }\n}")
+    }else{
+      result_code_transdata <- "transformed data {\n}"
+    }
   }else{
     result_code_transdata <- "transformed data {\n}"
   }
@@ -227,7 +218,7 @@ refundBayesdata = function(formula, data, family,
               stancode_transpara = result_code_transpara, ## code transformed parameters block
               trans.mat = trans.mat, ## transformation matrix used to recover functional coefficients
               X_scalar = X_scalar) ## scalar variables data as input for Stan
-         )
+  )
 }
 
 #----------------------------------------------------------------------------

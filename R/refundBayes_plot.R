@@ -19,11 +19,11 @@ plot.refundBayes=function(x = NULL,...,prob = 0.95,include = "both"){
   if(x$family=="functional"){
     ## for functional outcomes (FoSR)
     plot.res=list()
-    for(inx.effect in 1:dim(x$func_effect)[3]){
-      curve_est=x$func_effect[,,inx.effect]
-      mean.curve.est=apply(curve_est,1,mean)
-      upper.curve.est.quantile=apply(curve_est,1,function(xx){stats::quantile(xx,probs = (1+prob)/2)})
-      lower.curve.est.quantile=apply(curve_est,1,function(xx){stats::quantile(xx,probs = (1-prob)/2)})
+    for(inx.effect in 1:dim(x$func_coef)[2]){
+      curve_est=x$func_coef[,inx.effect,]
+      mean.curve.est=apply(curve_est,2,mean)
+      upper.curve.est.quantile=apply(curve_est,2,function(xx){stats::quantile(xx,probs = (1+prob)/2)})
+      lower.curve.est.quantile=apply(curve_est,2,function(xx){stats::quantile(xx,probs = (1-prob)/2)})
       upper.curve.wald=upper.curve.est.quantile
       lower.curve.wald=lower.curve.est.quantile
 

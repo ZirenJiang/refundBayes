@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^refundBayes_test\.Rmd$
+^refundBayes_test_V2\.Rmd$
 ^refundBayes_Vignette_Combine\.Rmd$
 ^otherfunctions$
 ^refundBayes_Vignette_Combine_files$

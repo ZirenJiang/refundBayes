@@ -2,7 +2,7 @@ Package: refundBayes
 Encoding: UTF-8
 Type: Package
 Title: Bayesian Regression with Functional Data
-Version: 0.3
+Version: 0.4
 Date: 2025-11-22
 Authors@R:
    c(person("Ziren", "Jiang", email = "jian0746@umn.edu",

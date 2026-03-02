@@ -70,28 +70,24 @@ refundBayesmodel = function(formula, data, family, func_comp, intercept){
 #' 
 refundBayesmodel_functional = function(formula, standata, family, func_comp, intercept){
   result_code_model <- paste0("model{ \n")
-  result_code_model <- paste0(result_code_model, "   //Linear predictor\n")
-  result_code_model <- paste0(result_code_model, "   matrix[N_num, T] mu;\n")
+  result_code_model <- paste0(result_code_model, "   matrix[N_num, M_num] mu;\n")
+  result_code_model <- paste0(result_code_model, "   // Fitted mean matrix \n")
+  result_code_model <- paste0(result_code_model, "   mu = X_mat * beta' * Psi_mat + xi * Phi_mat;\n")
+  result_code_model <- paste0(result_code_model, "   // Log-likelihood for functional response\n")
+  result_code_model <- paste0(result_code_model, "   target += - N_num * M_num * log(sigma_eps) / 2 - sum((mu - Y_mat)^2) / (2 * sigma_eps^2);\n")
   
-  if(TRUE){
-    #if(standata[["K_num"]]>1){
-    result_code_model <- paste0(result_code_model, "   matrix[K_num, T] betaT;\n")
-  }else{
-    result_code_model <- paste0(result_code_model, "   row_vector[T] betaT;\n")
-  }
-  
-  result_code_model <- paste0(result_code_model, "   betaT = b *phi;\n")
-  result_code_model <- paste0(result_code_model, "   mu = Z_mat * betaT + zxi * psi_mat;\n")
-  result_code_model <- paste0(result_code_model, "   target += -N_num*T*log(sigma_epis)/2- sum((mu-Y)^2)/(2*sigma_epis^2);\n")
-  result_code_model <- paste0(result_code_model, "   for(nj in 1:ncol_psi_mat){\n")
-  result_code_model <- paste0(result_code_model, "     target += -N_num*log(sigma_k[nj])/2- sum((zxi[,nj])^2)/(2*sigma_k[nj]^2);\n")
-  result_code_model <- paste0(result_code_model, "     target += inv_gamma_lpdf(sigma_k[nj]^2|0.005,0.005);\n")
+  result_code_model <- paste0(result_code_model, "   // Prior for the penalized spline coefficients \n")
+  result_code_model <- paste0(result_code_model, "   for(np in 1:P_num){\n")
+  result_code_model <- paste0(result_code_model, "        target += (- beta[,np]' * S_mat * beta[,np]) / (2 * sigma[np]^2);\n")
+  result_code_model <- paste0(result_code_model, "        target += inv_gamma_lpdf(sigma[np]^2|0.001,0.001);\n")
   result_code_model <- paste0(result_code_model, "   }\n")
-  result_code_model <- paste0(result_code_model, "   for(nk in 1:K_num){\n")
-  result_code_model <- paste0(result_code_model, "     target += (- b[nk,]*S_beta* b[nk,]') / (2*sigma_b[nk]^2);\n")
-  result_code_model <- paste0(result_code_model, "     target += inv_gamma_lpdf(sigma_b[nk]^2|0.005,0.005);;\n")
-  result_code_model <- paste0(result_code_model, "   };\n")
-  result_code_model <- paste0(result_code_model, "   target +=  inv_gamma_lpdf(sigma_epis^2|0.005,0.005);\n")
+  
+  result_code_model <- paste0(result_code_model, "    // Prior for the FPCA scores \n")  
+  result_code_model <- paste0(result_code_model, "   for(nj in 1:J_num){\n")
+  result_code_model <- paste0(result_code_model, "        target += - N_num * log(lambda[nj]) / 2 - sum((xi[,nj])^2) / (2 * lambda[nj]^2);\n")
+  result_code_model <- paste0(result_code_model, "        target += inv_gamma_lpdf(lambda[nj]^2|0.001,0.001);\n")
+  result_code_model <- paste0(result_code_model, "   }\n")
+  result_code_model <- paste0(result_code_model, "   target += inv_gamma_lpdf(sigma_eps^2|0.001,0.001);\n")
   result_code_model <- paste0(result_code_model, "}\n")
   return(result_code_model)
 }

@@ -3,6 +3,7 @@
 S3method(plot,refundBayes)
 S3method(summary,refundBayes)
 export(fcox_bayes)
+export(fosr_bayes)
 export(sofr_bayes)
 import(dplyr)
 import(ggplot2)
