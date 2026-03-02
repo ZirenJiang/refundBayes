@@ -1,0 +1,93 @@
+---
+title: "Untitled"
+output: html_document
+date: "2026-03-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## Test for different spline types
+
+```{r}
+tt = refundBayes::sofr_bayes(y ~ X1+s(tmat, by=lmat*wmat, bs="tp", k=10), 
+      data = data.SoFR, 
+      family = binomial(), 
+      runStan = T, # Whether automatically run Stan program. 
+      niter = 1000, # Total number of posterior sampling.
+      nwarmup = 500, # Burn-in value.
+      nchain = 1 # Number of parallel computed chains for posterior sampling.
+      )
+
+
+formula = y ~ X1+s(tmat, by=lmat*wmat, bs="cc", k=10)
+data = data.SoFR
+family = binomial()
+runStan = F
+niter = 1500
+nwarmup = 500
+nchain = 1
+
+term = formula$func_var[[1]]
+bymat <- data[[term[["by"]][[3]]]]
+curr_term <- term[["by"]]
+while(class(curr_term[[2]]) != "name"){
+  curr_term <- curr_term[[2]]
+  bymat <- bymat * data[[curr_term[[3]]]]
+  print(curr_term[[3]])
+}
+bymat <- bymat * data[[curr_term[[2]]]]
+object = 1
+eval(parse(text = paste0("object = ", format(term))))
+object = s(tmat, by = lmat * wmat, bs = "ps", k = 10)
+knots <- NULL
+dk <- ExtractData(object, data, knots)
+  
+  
+  
+
+t1 = mgcv::smooth.construct(object, dk$data, dk$knots)
+t2 = mgcv::smooth.construct.cc.smooth.spec(object, dk$data, dk$knots)
+
+t1$S[[1]] 
+t2$S[[1]]
+```
+
+
+## Test for Bayesian FOSR
+
+
+```{r}
+FoSR_exp_data <- readRDS("D:/Code/R/18. FDA Survival/P18_FDA_Bayesian_new/Supp Files/example_data_FoSR.rds")
+FoSR_exp_data$y = FoSR_exp_data$MIMS
+
+library(refund)
+fit.freq = pffr(y~-1+X,data=FoSR_exp_data,bs.yindex=list(bs="cc", k=10))
+plotfot = plot(fit.freq)
+```
+
+
+
+```{r}
+formula = y~X
+data = FoSR_exp_data
+intercept = FALSE
+
+data = data[1:200,]
+data$lmat = data.SoFR$lmat
+data$tmat = data.SoFR$tmat
+data$wmat = data.SoFR$wmat
+library(refundBayes)
+testfit = refundBayes::fosr_bayes(y~X + s(tmat, by=lmat*wmat, bs="cc", k=10), data = FoSR_exp_data)
+
+plot(testfit)
+
+```
+
+
+
+
+
