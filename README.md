@@ -63,7 +63,6 @@ library(mgcv)
 ```
 
 ```         
-## 载入需要的程辑包：nlme
 
 ## This is mgcv 1.9-1. For overview type 'help("mgcv-package")'.
 ```
@@ -72,17 +71,8 @@ library(mgcv)
 fit_freq1 = gam(y ~ s(tmat, by=lmat*wmat, bs="cc", k=10)+X1, data=data.SoFR, family="binomial")
 fit_freq2 = gam(y ~ s(tmat, by=lmat*wmat, bs="cc", k=10)+X1, data=data.SoFR, family="binomial", method = "REML")
 plotfot=plot(fit_freq1)
-```
-
-![](Tutorial_V2_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
-
-``` r
 plotfot2=plot(fit_freq2,unconditional = TRUE)
-```
 
-![](Tutorial_V2_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
-
-``` r
 T_num = 100
 plotdata=data.frame(value=c(mean.curve.est,
                             upper.curve.est,
