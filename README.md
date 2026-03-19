@@ -50,7 +50,7 @@ plot(refundBayes_SoFR)
 ## [[1]]
 ```
 
-![](Tutorial_V2_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](man/figures/unnamed-chunk-2-1.png)<!-- -->
 
 ## Compare with frequentist mgcv result
 
@@ -112,7 +112,7 @@ ggplot(plotdata,aes(y=value,x=xmat))+geom_line(aes(linetype=type,color=Method))+
   theme_minimal()
 ```
 
-![](Tutorial_V2_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
+![](man/figures/unnamed-chunk-3-3.png)<!-- -->
 
 # Bayesian Functional Cox Regression (FCox)
 
@@ -152,7 +152,7 @@ plot(refundBayes_FCox)
 ## [[1]]
 ```
 
-![](Tutorial_V2_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](man/figures/unnamed-chunk-4-1.png)<!-- -->
 
 # Bayesian Functional-on-Scalar Regression (FoSR)
 
@@ -225,4 +225,4 @@ plot(refundBayes_FoSR)
 ## [[1]]
 ```
 
-![](Tutorial_V2_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](man/figures/unnamed-chunk-5-1.png)<!-- -->

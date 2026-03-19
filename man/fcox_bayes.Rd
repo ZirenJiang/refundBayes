@@ -64,3 +64,30 @@ Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional 
 \author{
 Erjia Cui \email{ecui@umn.edu}, Ziren Jiang \email{jian0746@umn.edu}
 }
+\examples{
+\dontrun{
+## Not run: Stan requires a working C++ toolchain
+# Functional Cox regression with right-censored survival outcome
+set.seed(1)
+n <- 150; L <- 50
+Lindex    <- seq(0, 1, length.out = L)
+X_func    <- matrix(rnorm(n * L), nrow = n)
+age       <- rnorm(n)
+beta_true <- cos(2 * pi * Lindex)
+lp        <- X_func * beta_true / L + 0.3 * age
+time      <- rexp(n, rate = exp(lp))
+cens_time <- runif(n, min = 0.5, max = 3)
+obs_time  <- pmin(time, cens_time)
+cens_ind  <- as.integer(time <= cens_time)
+dat        <- data.frame(obs_time = obs_time, age = age)
+dat$X_func <- X_func
+dat$Lindex <- matrix(rep(Lindex, n), nrow = n, byrow = TRUE)
+fit <- fcox_bayes(
+  formula = obs_time ~ age + s(Lindex, by = X_func, bs = "cr", k = 10),
+  data = dat, cens = cens_ind, niter = 2000, nchain = 3
+)
+summary(fit)
+plot(fit)
+}
+}
+

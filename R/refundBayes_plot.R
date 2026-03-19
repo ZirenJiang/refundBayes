@@ -102,7 +102,7 @@ plot.refundBayes=function(x = NULL,...,prob = 0.95,include = "both"){
                                Method = c(rep("Bayesian",length(mean.curve.est))))
 
       plot.res[[inx.effect]] <- ggplot2::ggplot(plotdata2, aes(y = .data$value, x = .data$xmat, color = .data$Method)) +
-        ggplot2::geom_line(size = 1) +
+        ggplot2::geom_line(linewidth = 1) +
         ggplot2::geom_ribbon(aes(ymin = .data$CI.lower, ymax = .data$CI.upper, fill = "Pointwise CI"),
                     alpha = 0.2, color = "black", linetype = "dashed") +
         ggplot2::geom_ribbon(aes(ymin = .data$CMA.lower, ymax = .data$CMA.upper, fill = "CMA CI"),

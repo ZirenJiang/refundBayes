@@ -8,9 +8,9 @@
 #'
 #' @param formula Functional regression formula, with the same syntax as that in the R mgcv package.
 #' @param data A data frame containing data of all scalar and functional variables used in the model.
-#' @param family Distribution of the outcome variable. Currently support "gaussian" and "binomial".
 #' @param joint_FPCA A True/False vector of the same length of the number of functional predictors, indicating whether jointly modeling FPCA for the functional predictors. Default to NULL.
-#' @param intercept True/False variable for whether include an intercept term in the linear predictor. Default to TRUE.
+#' @param spline_type Type of spline basis for modelling the residual process.
+#' @param spline_df Degrees of freedom for the spline basis for modelling the residual process.
 #' @param runStan True/False variable for whether to run the Stan program. If False, the function only generates the Stan code and data.
 #' @param niter Total number of Bayesian iterations.
 #' @param nwarmup Number of warmup (burnin) iterations for posterior sampling.
@@ -31,6 +31,44 @@
 #'
 #' @references Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. \emph{Statistics in Medicine}, 44(20-22), e70265.
 #'
+#' @examples
+#' \donttest{
+#' # Simulate data for a Function-on-Scalar Regression model
+#' set.seed(1)
+#' n  <- 100   # number of subjects
+#' M  <- 50    # number of functional response observation points
+#' tindex <- seq(0, 1, length.out = M)  # response functional domain grid
+#'
+#' # Scalar predictors
+#' age <- rnorm(n)
+#' sex <- rbinom(n, 1, 0.5)
+#'
+#' # True coefficient functions
+#' beta_age <- sin(2 * pi * tindex)
+#' beta_sex <- cos(2 * pi * tindex)
+#'
+#' # Generate functional response (n x M matrix)
+#' epsilon  <- matrix(rnorm(n * M, sd = 0.3), nrow = n)
+#' Y_mat    <- outer(age, beta_age) + outer(sex, beta_sex) + epsilon
+#'
+#' dat <- data.frame(age = age, sex = sex)
+#' dat$Y_mat <- Y_mat
+#'
+#' # Fit the Bayesian FoSR model
+#' fit_fosr <- fosr_bayes(
+#'   formula    = Y_mat ~ age + sex,
+#'   data       = dat,
+#'   spline_type = "bs",
+#'   spline_df  = 10,
+#'   niter      = 2000,
+#'   nwarmup    = 1000,
+#'   nchain     = 3
+#' )
+#'
+#' # Plot estimated coefficient functions
+#' plot(fit_fosr)
+#' }
+#' 
 #' @import mgcv
 #' @import splines2
 #' @import rstan
@@ -58,7 +96,7 @@ fosr_bayes <- function(formula, data,
     if(length(formula_use$func_var) == 0){
       func_comp <- NULL
     }else{
-      func_comp <- rep(F,length(formula_use$func_var))
+      func_comp <- rep(FALSE,length(formula_use$func_var))
     }
   }else{
     func_comp <- joint_FPCA

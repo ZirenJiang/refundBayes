@@ -8,7 +8,6 @@ fosr_bayes(
   formula,
   data,
   joint_FPCA = NULL,
-  intercept = TRUE,
   runStan = TRUE,
   niter = 3000,
   nwarmup = 1000,
@@ -25,8 +24,6 @@ fosr_bayes(
 
 \item{joint_FPCA}{A True/False vector of the same length of the number of functional predictors, indicating whether jointly modeling FPCA for the functional predictors. Default to NULL.}
 
-\item{intercept}{True/False variable for whether include an intercept term in the linear predictor. Default to TRUE.}
-
 \item{runStan}{True/False variable for whether to run the Stan program. If False, the function only generates the Stan code and data.}
 
 \item{niter}{Total number of Bayesian iterations.}
@@ -37,7 +34,9 @@ fosr_bayes(
 
 \item{ncores}{Number of cores to use when executing the chains in parallel. Default to 1.}
 
-\item{family}{Distribution of the outcome variable. Currently support "gaussian" and "binomial".}
+\item{spline_type}{Type of spline basis for modelling the residual process.}
+
+\item{spline_df}{Degrees of freedom for the spline basis for modelling the residual process.}
 }
 \value{
 A list containing:
@@ -63,3 +62,25 @@ Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional 
 \author{
 Erjia Cui \email{ecui@umn.edu}, Ziren Jiang \email{jian0746@umn.edu}
 }
+\examples{
+\dontrun{
+## Not run: Stan requires a working C++ toolchain
+# Function-on-scalar regression
+set.seed(1)
+n <- 100; M <- 50
+tindex   <- seq(0, 1, length.out = M)
+age      <- rnorm(n)
+sex      <- rbinom(n, 1, 0.5)
+Y_mat    <- outer(age, sin(2 * pi * tindex)) +
+            outer(sex, cos(2 * pi * tindex)) +
+            matrix(rnorm(n * M, sd = 0.3), nrow = n)
+dat       <- data.frame(age = age, sex = sex)
+dat$Y_mat <- Y_mat
+fit <- fosr_bayes(
+  formula = Y_mat ~ age + sex,
+  data = dat, spline_type = "bs", spline_df = 10, niter = 2000
+)
+plot(fit)
+}
+}
+

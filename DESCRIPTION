@@ -3,14 +3,13 @@ Encoding: UTF-8
 Type: Package
 Title: Bayesian Regression with Functional Data
 Version: 0.4
-Date: 2025-11-22
 Authors@R:
    c(person("Ziren", "Jiang", email = "jian0746@umn.edu",
              role = c("aut", "cre")),
       person("Erjia", "Cui", role = c("aut")),
       person("Ciprian", "Crainiceanu", role = c("ctb")))
 Depends:
-    R (>= 3.6.0),
+    R (>= 3.6.0)
 Imports:
     brms,
     dplyr,
@@ -20,10 +19,14 @@ Imports:
     rstan (>= 2.29.0),
     splines2,
     stats
-Description: Bayesian regression with function data, including scalar-on-function regression,function-on-scalar, and survival models with functional covariates.
+Description: Bayesian regression with functional data, including regression with scalar, survival, or functional outcomes. The package allows regression with scalar and functional predictors.
 LazyData: true
 NeedsCompilation: no
+BugReports: https://github.com/ZirenJiang/refundBayes/issues
 License: GPL-2
-URL: https://github.com/ecui1/refundBayes
-Additional_repositories:
+URL: https://github.com/ZirenJiang/refundBayes
 RoxygenNote: 7.3.3
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
+

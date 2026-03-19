@@ -1,0 +1,64 @@
+url: https://github.com/ZirenJiang/refundBayes
+
+template:
+  bootstrap: 5
+  bootswatch: flatly          # clean, professional theme
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/ZirenJiang/refundBayes
+      aria-label: GitHub
+
+home:
+  title: "refundBayes — Bayesian Regression with Functional Data"
+  description: >
+    Bayesian scalar-on-function, function-on-scalar, and functional Cox
+    regression models fitted via Stan.
+  links:
+  - text: "Paper (Statistics in Medicine)"
+    href: https://doi.org/10.1002/sim.70265
+
+reference:
+- title: "Scalar-on-Function Regression"
+  desc: >
+    Model a scalar outcome as a function of one or more functional predictors.
+  contents:
+  - sofr_bayes
+
+- title: "Function-on-Scalar Regression"
+  desc: >
+    Model a functional outcome as a function of scalar predictors.
+  contents:
+  - fosr_bayes
+
+- title: "Functional Cox Regression"
+  desc: >
+    Survival model with functional predictors and right-censored outcomes.
+  contents:
+  - fcox_bayes
+
+- title: "Post-fitting"
+  desc: "Methods for summarising and plotting fitted models."
+  contents:
+  - summary.refundBayes
+  - plot.refundBayes
+
+
+articles:
+- title: "Tutorials"
+  navbar: Tutorials
+  contents:
+  - sofr_bayes_vignette
+  - fosr_bayes_vignette
+  - fcox_bayes_vignette
+
+news:
+  releases:
+  - text: "Version 0.4"
+    href: https://github.com/ZirenJiang/refundBayes/releases/tag/v0.4
+

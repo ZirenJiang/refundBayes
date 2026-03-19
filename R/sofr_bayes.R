@@ -31,6 +31,49 @@
 #'
 #' @references Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. \emph{Statistics in Medicine}, 44(20-22), e70265.
 #'
+#' @examples
+#' \donttest{
+#' # Simulate data for a Gaussian SoFR model
+#' set.seed(1)
+#' n  <- 100  # number of subjects
+#' L  <- 50   # number of functional domain points
+#' Lindex <- seq(0, 1, length.out = L)       # functional domain grid
+#' X_func <- matrix(rnorm(n * L), nrow = n)  # functional predictor (n x L)
+#' age    <- rnorm(n)                         # scalar predictor
+#' beta_true <- sin(2 * pi * Lindex)         # true functional coefficient
+#' Y <- X_func %*% beta_true / L + 0.5 * age + rnorm(n, sd = 0.5)
+#'
+#' dat <- data.frame(Y = Y, age = age)
+#' dat$X_func  <- X_func
+#' dat$Lindex  <- matrix(rep(Lindex, n), nrow = n, byrow = TRUE)
+#'
+#' # Fit Gaussian SoFR
+#' fit_sofr <- sofr_bayes(
+#'   formula = Y ~ age + s(Lindex, by = X_func, bs = "cr", k = 10),
+#'   data    = dat,
+#'   family  = "gaussian",
+#'   niter   = 2000,
+#'   nwarmup = 1000,
+#'   nchain  = 3
+#' )
+#'
+#' # Summarise and plot estimated functional coefficient
+#' summary(fit_sofr)
+#' plot(fit_sofr)
+#'
+#' # Fit binomial SoFR
+#' Y_bin <- rbinom(n, 1, plogis(X_func %*% beta_true / L))
+#' dat$Y_bin <- Y_bin
+#' fit_bin <- sofr_bayes(
+#'   formula = Y_bin ~ s(Lindex, by = X_func, bs = "cr", k = 10),
+#'   data    = dat,
+#'   family  = "binomial",
+#'   niter   = 2000,
+#'   nwarmup = 1000,
+#'   nchain  = 3
+#' )
+#' }
+#' 
 #' @import mgcv
 #' @import splines2
 #' @import rstan
@@ -63,7 +106,7 @@ sofr_bayes <- function(formula, data, family = gaussian(),
     if(length(formula_use$func_var) == 0){
       func_comp <- NULL
     }else{
-      func_comp <- rep(F,length(formula_use$func_var))
+      func_comp <- rep(FALSE,length(formula_use$func_var))
     }
   }else{
     func_comp <- joint_FPCA

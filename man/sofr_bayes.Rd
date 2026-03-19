@@ -62,3 +62,26 @@ Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional 
 \author{
 Erjia Cui \email{ecui@umn.edu}, Ziren Jiang \email{jian0746@umn.edu}
 }
+\examples{
+\dontrun{
+## Not run: Stan requires a working C++ toolchain
+# Gaussian scalar-on-function regression
+set.seed(1)
+n <- 100; L <- 50
+Lindex    <- seq(0, 1, length.out = L)
+X_func    <- matrix(rnorm(n * L), nrow = n)
+age       <- rnorm(n)
+beta_true <- sin(2 * pi * Lindex)
+Y  <- X_func %*% beta_true / L + 0.5 * age + rnorm(n, sd = 0.5)
+dat        <- data.frame(Y = Y, age = age)
+dat$X_func <- X_func
+dat$Lindex <- matrix(rep(Lindex, n), nrow = n, byrow = TRUE)
+fit <- sofr_bayes(
+  formula = Y ~ age + s(Lindex, by = X_func, bs = "cr", k = 10),
+  data = dat, family = "gaussian", niter = 2000, nchain = 3
+)
+summary(fit)
+plot(fit)
+}
+}
+

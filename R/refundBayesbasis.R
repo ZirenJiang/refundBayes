@@ -29,14 +29,17 @@ extract_basis = function(formula, data, func_comp){ ## currently only support "c
 #' @noRd
 #' 
 extract_basis_all = function(term, data){
-  bymat <- data[[term[["by"]][[3]]]]
-  curr_term <- term[["by"]]
-  while(class(curr_term[[2]]) != "name"){
-    curr_term <- curr_term[[2]]
-    bymat <- bymat * data[[curr_term[[3]]]]
-    print(curr_term[[3]])
+  if (is.name(term[["by"]])) {
+    bymat <- data[[as.character(term[["by"]])]]
+  } else {
+    bymat <- data[[term[["by"]][[3]]]]
+    curr_term <- term[["by"]]
+    while(!is.name(curr_term[[2]])) {
+      curr_term <- curr_term[[2]]
+      bymat <- bymat * data[[curr_term[[3]]]]
+    }
+    bymat <- bymat * data[[curr_term[[2]]]]
   }
-  bymat <- bymat * data[[curr_term[[2]]]]
   object = 1
   eval(parse(text = paste0("object = ", format(term))))
   knots <- NULL
@@ -114,14 +117,17 @@ extract_basis_all = function(term, data){
 #' @noRd
 #' 
 extract_basis_cr = function(term, data){
-  bymat <- data[[term[["by"]][[3]]]]
-  curr_term <- term[["by"]]
-  while(class(curr_term[[2]]) != "name"){
-    curr_term <- curr_term[[2]]
-    bymat <- bymat * data[[curr_term[[3]]]]
-    print(curr_term[[3]])
+  if (is.name(term[["by"]])) {
+    bymat <- data[[as.character(term[["by"]])]]
+  } else {
+    bymat <- data[[term[["by"]][[3]]]]
+    curr_term <- term[["by"]]
+    while(!is.name(curr_term[[2]])) {
+      curr_term <- curr_term[[2]]
+      bymat <- bymat * data[[curr_term[[3]]]]
+    }
+    bymat <- bymat * data[[curr_term[[2]]]]
   }
-  bymat <- bymat * data[[curr_term[[2]]]]
   object = 1
   eval(parse(text = paste0("object = ", format(term))))
   knots <- NULL
@@ -197,14 +203,17 @@ extract_basis_cr = function(term, data){
 #' @noRd
 #' 
 extract_basis_cc = function(term, data){
-  bymat <- data[[term[["by"]][[3]]]]
-  curr_term <- term[["by"]]
-  while(class(curr_term[[2]])!="name"){
-    curr_term <- curr_term[[2]]
-    bymat <- bymat * data[[curr_term[[3]]]]
-    print(curr_term[[3]])
+  if (is.name(term[["by"]])) {
+    bymat <- data[[as.character(term[["by"]])]]
+  } else {
+    bymat <- data[[term[["by"]][[3]]]]
+    curr_term <- term[["by"]]
+    while(!is.name(curr_term[[2]])) {
+      curr_term <- curr_term[[2]]
+      bymat <- bymat * data[[curr_term[[3]]]]
+    }
+    bymat <- bymat * data[[curr_term[[2]]]]
   }
-  bymat <- bymat * data[[curr_term[[2]]]]
   object = 1
   eval(parse(text = paste0("object = ", format(term))))
   knots <- NULL
@@ -272,5 +281,3 @@ extract_basis_cc = function(term, data){
               eigendecomp = eigendecomp,
               base_mat = base_mat))
 }
-
-

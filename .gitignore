@@ -4,3 +4,12 @@
 .Ruserdata
 refundBayes_test.rmd
 refundBayes_Vignette_Combine.rmd
+README_V1.md
+Tutorial.rmd
+Tutorial_V2.rmd
+Tutorial_V2.md
+sofr_bayes_vignette_V1.Rmd
+sofr_bayes_vignette_V2.Rmd
+sofr_bayes_vignette_gpt.Rmd
+vignettes/
+^\.RDataTmp$
