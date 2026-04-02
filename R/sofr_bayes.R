@@ -31,7 +31,6 @@
 #'
 #' @references Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. \emph{Statistics in Medicine}, 44(20-22), e70265.
 #'
-#' @examples
 #' \donttest{
 #' # Simulate data for a Gaussian SoFR model
 #' set.seed(1)
@@ -40,8 +39,9 @@
 #' Lindex <- seq(0, 1, length.out = L)       # functional domain grid
 #' X_func <- matrix(rnorm(n * L), nrow = n)  # functional predictor (n x L)
 #' age    <- rnorm(n)                         # scalar predictor
-#' beta_true <- sin(2 * pi * Lindex)         # true functional coefficient
-#' Y <- X_func %*% beta_true / L + 0.5 * age + rnorm(n, sd = 0.5)
+#' beta_true <- sin(pi * Lindex)         # true functional coefficient
+#' eta <- X_func %*% beta_true / L
+#' Y <- eta + 0.5 * age + rnorm(n, sd = 0.5)
 #'
 #' dat <- data.frame(Y = Y, age = age)
 #' dat$X_func  <- X_func
@@ -62,7 +62,8 @@
 #' plot(fit_sofr)
 #'
 #' # Fit binomial SoFR
-#' Y_bin <- rbinom(n, 1, plogis(X_func %*% beta_true / L))
+#' prob <- plogis(X_func %*% beta_true / L)
+#' Y_bin <- rbinom(n, 1, prob)
 #' dat$Y_bin <- Y_bin
 #' fit_bin <- sofr_bayes(
 #'   formula = Y_bin ~ s(Lindex, by = X_func, bs = "cr", k = 10),

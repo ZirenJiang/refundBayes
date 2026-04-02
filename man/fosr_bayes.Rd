@@ -56,31 +56,48 @@ Fit the Bayesian Function-on-Scalar Regression (FOSR) model using Stan.
 The Bayesian FOSR model is implemented following the tutorial by Jiang et al., 2025.
 The model is specified using the same syntax as in the R mgcv package.
 }
+\examples{
+\donttest{
+# Simulate data for a Function-on-Scalar Regression model
+set.seed(1)
+n  <- 100   # number of subjects
+M  <- 50    # number of functional response observation points
+tindex <- seq(0, 1, length.out = M)  # response functional domain grid
+
+# Scalar predictors
+age <- rnorm(n)
+sex <- rbinom(n, 1, 0.5)
+
+# True coefficient functions
+beta_age <- sin(2 * pi * tindex)
+beta_sex <- cos(2 * pi * tindex)
+
+# Generate functional response (n x M matrix)
+epsilon  <- matrix(rnorm(n * M, sd = 0.3), nrow = n)
+Y_mat    <- outer(age, beta_age) + outer(sex, beta_sex) + epsilon
+
+dat <- data.frame(age = age, sex = sex)
+dat$Y_mat <- Y_mat
+
+# Fit the Bayesian FoSR model
+fit_fosr <- fosr_bayes(
+  formula    = Y_mat ~ age + sex,
+  data       = dat,
+  spline_type = "bs",
+  spline_df  = 10,
+  niter      = 2000,
+  nwarmup    = 1000,
+  nchain     = 3
+)
+
+# Plot estimated coefficient functions
+plot(fit_fosr)
+}
+
+}
 \references{
 Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. \emph{Statistics in Medicine}, 44(20-22), e70265.
 }
 \author{
 Erjia Cui \email{ecui@umn.edu}, Ziren Jiang \email{jian0746@umn.edu}
 }
-\examples{
-\dontrun{
-## Not run: Stan requires a working C++ toolchain
-# Function-on-scalar regression
-set.seed(1)
-n <- 100; M <- 50
-tindex   <- seq(0, 1, length.out = M)
-age      <- rnorm(n)
-sex      <- rbinom(n, 1, 0.5)
-Y_mat    <- outer(age, sin(2 * pi * tindex)) +
-            outer(sex, cos(2 * pi * tindex)) +
-            matrix(rnorm(n * M, sd = 0.3), nrow = n)
-dat       <- data.frame(age = age, sex = sex)
-dat$Y_mat <- Y_mat
-fit <- fosr_bayes(
-  formula = Y_mat ~ age + sex,
-  data = dat, spline_type = "bs", spline_df = 10, niter = 2000
-)
-plot(fit)
-}
-}
-

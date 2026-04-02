@@ -13,7 +13,6 @@
 ^sofr_bayes_vignette_V1\.Rmd
 ^sofr_bayes_vignette_V2\.Rmd
 ^sofr_bayes_vignette_gpt\.Rmd
-vignettes/
 data/
 Tutorial_V2_files/
 fcox_bayes_vignette\.Rmd
@@ -29,9 +28,6 @@ fosr_bayes_vignette\.md
 ^Tutorial_V2\.md$
 ^Tutorial\.md$
 ^README_V1\.md$
-^fosr_bayes_vignette\.md$
-^sofr_bayes_vignette\.md$
-^fcox_bayes_vignette\.md$
 ^fix_figures\.R$
 ^diagnose_and_build\.R$
 ^fix_rd_direct\.R$

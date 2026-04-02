@@ -58,30 +58,51 @@ The model is specified using the same syntax as in the R mgcv package.
 }
 \references{
 Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. \emph{Statistics in Medicine}, 44(20-22), e70265.
+
+\donttest{
+# Simulate data for a Gaussian SoFR model
+set.seed(1)
+n  <- 100  # number of subjects
+L  <- 50   # number of functional domain points
+Lindex <- seq(0, 1, length.out = L)       # functional domain grid
+X_func <- matrix(rnorm(n * L), nrow = n)  # functional predictor (n x L)
+age    <- rnorm(n)                         # scalar predictor
+beta_true <- sin(pi * Lindex)         # true functional coefficient
+eta <- X_func %*% beta_true / L
+Y <- eta + 0.5 * age + rnorm(n, sd = 0.5)
+
+dat <- data.frame(Y = Y, age = age)
+dat$X_func  <- X_func
+dat$Lindex  <- matrix(rep(Lindex, n), nrow = n, byrow = TRUE)
+
+# Fit Gaussian SoFR
+fit_sofr <- sofr_bayes(
+  formula = Y ~ age + s(Lindex, by = X_func, bs = "cr", k = 10),
+  data    = dat,
+  family  = "gaussian",
+  niter   = 2000,
+  nwarmup = 1000,
+  nchain  = 3
+)
+
+# Summarise and plot estimated functional coefficient
+summary(fit_sofr)
+plot(fit_sofr)
+
+# Fit binomial SoFR
+prob <- plogis(X_func %*% beta_true / L)
+Y_bin <- rbinom(n, 1, prob)
+dat$Y_bin <- Y_bin
+fit_bin <- sofr_bayes(
+  formula = Y_bin ~ s(Lindex, by = X_func, bs = "cr", k = 10),
+  data    = dat,
+  family  = "binomial",
+  niter   = 2000,
+  nwarmup = 1000,
+  nchain  = 3
+)
+}
 }
 \author{
 Erjia Cui \email{ecui@umn.edu}, Ziren Jiang \email{jian0746@umn.edu}
 }
-\examples{
-\dontrun{
-## Not run: Stan requires a working C++ toolchain
-# Gaussian scalar-on-function regression
-set.seed(1)
-n <- 100; L <- 50
-Lindex    <- seq(0, 1, length.out = L)
-X_func    <- matrix(rnorm(n * L), nrow = n)
-age       <- rnorm(n)
-beta_true <- sin(2 * pi * Lindex)
-Y  <- X_func %*% beta_true / L + 0.5 * age + rnorm(n, sd = 0.5)
-dat        <- data.frame(Y = Y, age = age)
-dat$X_func <- X_func
-dat$Lindex <- matrix(rep(Lindex, n), nrow = n, byrow = TRUE)
-fit <- sofr_bayes(
-  formula = Y ~ age + s(Lindex, by = X_func, bs = "cr", k = 10),
-  data = dat, family = "gaussian", niter = 2000, nchain = 3
-)
-summary(fit)
-plot(fit)
-}
-}
-
