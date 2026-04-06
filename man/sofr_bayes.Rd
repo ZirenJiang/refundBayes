@@ -56,9 +56,7 @@ Fit the Bayesian Scalar-on-Function Regression (SoFR) model using Stan.
 The Bayesian SoFR model is implemented following the tutorial by Jiang et al., 2025.
 The model is specified using the same syntax as in the R mgcv package.
 }
-\references{
-Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. \emph{Statistics in Medicine}, 44(20-22), e70265.
-
+\examples{
 \donttest{
 # Simulate data for a Gaussian SoFR model
 set.seed(1)
@@ -68,7 +66,7 @@ Lindex <- seq(0, 1, length.out = L)       # functional domain grid
 X_func <- matrix(rnorm(n * L), nrow = n)  # functional predictor (n x L)
 age    <- rnorm(n)                         # scalar predictor
 beta_true <- sin(pi * Lindex)         # true functional coefficient
-eta <- X_func %*% beta_true / L
+eta <- X_func \%*\% beta_true / L
 Y <- eta + 0.5 * age + rnorm(n, sd = 0.5)
 
 dat <- data.frame(Y = Y, age = age)
@@ -90,7 +88,7 @@ summary(fit_sofr)
 plot(fit_sofr)
 
 # Fit binomial SoFR
-prob <- plogis(X_func %*% beta_true / L)
+prob <- plogis(X_func \%*\% beta_true / L)
 Y_bin <- rbinom(n, 1, prob)
 dat$Y_bin <- Y_bin
 fit_bin <- sofr_bayes(
@@ -102,6 +100,10 @@ fit_bin <- sofr_bayes(
   nchain  = 3
 )
 }
+
+}
+\references{
+Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. \emph{Statistics in Medicine}, 44(20-22), e70265.
 }
 \author{
 Erjia Cui \email{ecui@umn.edu}, Ziren Jiang \email{jian0746@umn.edu}

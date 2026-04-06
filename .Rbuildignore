@@ -15,9 +15,6 @@
 ^sofr_bayes_vignette_gpt\.Rmd
 data/
 Tutorial_V2_files/
-fcox_bayes_vignette\.Rmd
-fosr_bayes_vignette\.Rmd
-fosr_bayes_vignette\.md
 ^\.RDataTmp$
 ^_pkgdown\.yml$
 ^docs$
