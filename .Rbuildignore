@@ -33,4 +33,5 @@ Tutorial_V2_files/
 ^build_site\.R$
 ^sofr_bayes_vignette_V2\.Rmd$
 ^add_vignettes_v2\.R$
-
+.claude/
+.github/

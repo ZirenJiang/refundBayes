@@ -34,7 +34,7 @@
 #' @references Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. \emph{Statistics in Medicine}, 44(20-22), e70265.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Simulate survival data with a functional predictor
 #' set.seed(1)
 #' n  <- 150  # number of subjects

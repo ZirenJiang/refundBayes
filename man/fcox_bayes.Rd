@@ -59,7 +59,7 @@ framework to survival outcomes with right censoring. The model is specified
 using similar syntax as in the R mgcv package.
 }
 \examples{
-\donttest{
+\dontrun{
 # Simulate survival data with a functional predictor
 set.seed(1)
 n  <- 150  # number of subjects

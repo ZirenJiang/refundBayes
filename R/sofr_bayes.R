@@ -32,7 +32,7 @@
 #' @references Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. \emph{Statistics in Medicine}, 44(20-22), e70265.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Simulate data for a Gaussian SoFR model
 #' set.seed(1)
 #' n  <- 100  # number of subjects

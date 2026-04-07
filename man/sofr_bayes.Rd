@@ -57,7 +57,7 @@ The Bayesian SoFR model is implemented following the tutorial by Jiang et al., 2
 The model is specified using the same syntax as in the R mgcv package.
 }
 \examples{
-\donttest{
+\dontrun{
 # Simulate data for a Gaussian SoFR model
 set.seed(1)
 n  <- 100  # number of subjects
