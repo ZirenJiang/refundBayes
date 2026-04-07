@@ -13,3 +13,4 @@ sofr_bayes_vignette_V2.Rmd
 sofr_bayes_vignette_gpt.Rmd
 vignettes/
 ^\.RDataTmp$
+.claude/

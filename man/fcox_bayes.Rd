@@ -69,8 +69,8 @@ X_func <- matrix(rnorm(n * L), nrow = n)  # functional predictor (n x L)
 age    <- rnorm(n)                         # scalar predictor
 
 # True functional effect and linear predictor
-beta_true <- cos(2 * pi * Lindex)
-lp <- X_func \%*\% beta_true / L + 0.3 * age
+beta_true <- cos(pi * Lindex)
+lp <- X_func \%*\% beta_true / L + age
 
 # Generate survival times from an exponential baseline hazard
 time  <- rexp(n, rate = exp(lp))

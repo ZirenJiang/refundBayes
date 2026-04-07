@@ -36,6 +36,12 @@ reference:
   contents:
   - fosr_bayes
 
+- title: "Function-on-Function Regression"
+  desc: >
+    Model a functional outcome as a function of functional (and optional scalar) predictors.
+  contents:
+  - fofr_bayes
+
 - title: "Functional Cox Regression"
   desc: >
     Survival model with functional predictors and right-censored outcomes.
@@ -55,10 +61,11 @@ articles:
   contents:
   - sofr_bayes_vignette
   - fosr_bayes_vignette
+  - fofr_bayes_vignette
   - fcox_bayes_vignette
 
 news:
   releases:
-  - text: "Version 0.4"
+  - text: "Version 0.5"
     href: https://github.com/ZirenJiang/refundBayes/releases/tag/v0.4
 

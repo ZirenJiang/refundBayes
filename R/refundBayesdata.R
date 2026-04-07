@@ -102,7 +102,9 @@ refundBayesdata = function(formula, data, family,
     result[["Y_mat"]] <- data[[formula$y_var]]
     result_code_data <- paste0(result_code_data, "   matrix[N_num, M_num] Y_mat; // Functional response\n")
     
-    freq.fpca <- refund::fpca.face(unclass(data[[formula$y_var]]))
+    #freq.fpca <- refund::fpca.face(unclass(data[[formula$y_var]]))
+    freq.fpca <- refund::fpca.sc(unclass(data[[formula$y_var]]))
+    
     data_temp <- data.frame(inx = 1:NROW(data))
     data_temp[["yindex.vec"]] <- matrix(rep(1:dim(data[[formula$y_var]])[2], NROW(data)), nrow = NROW(data))
     object = 1
