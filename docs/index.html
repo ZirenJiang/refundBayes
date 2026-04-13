@@ -68,207 +68,129 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="refundbayes-bayesian-functional-regression-using-stan">refundBayes: Bayesian Functional Regression using Stan<a class="anchor" aria-label="anchor" href="#refundbayes-bayesian-functional-regression-using-stan"></a>
+<div class="page-header"><h1 id="refundbayes-">refundBayes <a href="https://zirenjiang.github.io/refundBayes/"><img src="reference/figures/logo.png" alt="refundBayes website" align="right" height="139"></a>
+<a class="anchor" aria-label="anchor" href="#refundbayes-"></a>
 </h1></div>
-<div class="section level2">
-<h2 id="id_2026-03-02">2026-03-02<a class="anchor" aria-label="anchor" href="#id_2026-03-02"></a>
-</h2>
-<p>This vignette introduces the use of the <code>refundBayes</code> package with simple examples for: (1) Bayesian Scalar-on-Function Regression (SoFR), (2) Bayesian Functional Cox Rergession (FCox), and (3) Bayesian Function-on-Scalar Rergession (FoSR). The <code>refundBayes</code> package provides users with a convenient way to perform Bayesian functional data analysis using Stan, a state-of-the-art Bayesian analysis language. The syntax of <code>refundBayes</code> is designed to resemble that of <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">mgcv::gam</a></code>, but it employs Bayesian posterior inference and includes additional arguments specific to the Stan implementation.</p>
-</div>
-</div>
-<div class="section level1">
-<h1 id="install-the-refundbayes-package-from-github">Install the refundBayes package from Github<a class="anchor" aria-label="anchor" href="#install-the-refundbayes-package-from-github"></a>
-</h1>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"https://github.com/ZirenJiang/refundBayes"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Skipping install of 'refundBayes' from a github remote, the SHA1 (5a1f14ca) has not changed since last install.</span></span>
-<span><span class="co">##   Use `force = TRUE` to force installation</span></span></code></pre>
-</div>
-<div class="section level1">
-<h1 id="bayesian-scalar-on-function-regression-sofr">Bayesian Scalar-on-Function Regression (SoFR)<a class="anchor" aria-label="anchor" href="#bayesian-scalar-on-function-regression-sofr"></a>
-</h1>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">##  Read the example data</span></span>
-<span><span class="va">data.SoFR</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"data/example_data_sofr.rds"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">##  Run Bayesian SOFR with the sofr_bayes() function</span></span>
-<span><span class="va">refundBayes_SoFR</span> <span class="op">=</span> <span class="fu">refundBayes</span><span class="fu">::</span><span class="fu"><a href="reference/sofr_bayes.html">sofr_bayes</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X1</span><span class="op">+</span><span class="fu">s</span><span class="op">(</span><span class="va">tmat</span>, by<span class="op">=</span><span class="va">lmat</span><span class="op">*</span><span class="va">wmat</span>, bs<span class="op">=</span><span class="st">"cc"</span>, k<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, </span>
-<span>      data <span class="op">=</span> <span class="va">data.SoFR</span>, </span>
-<span>      family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span>, </span>
-<span>      runStan <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># Whether automatically run Stan program. </span></span>
-<span>      niter <span class="op">=</span> <span class="fl">1500</span>, <span class="co"># Total number of posterior sampling.</span></span>
-<span>      nwarmup <span class="op">=</span> <span class="fl">500</span>, <span class="co"># Burn-in value.</span></span>
-<span>      nchain <span class="op">=</span> <span class="fl">3</span>, <span class="co"># Number of parallel computed chains for posterior sampling.</span></span>
-<span>      ncores <span class="op">=</span> <span class="fl">3</span></span>
-<span>      <span class="op">)</span></span>
-<span></span>
-<span><span class="co">##  Visualization of the fitted functional coefficient</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">refundBayes_SoFR</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
-<span><span class="co">## ℹ Please use `linewidth` instead.</span></span>
-<span><span class="co">## ℹ The deprecated feature was likely used in the refundBayes package.</span></span>
-<span><span class="co">##   Please report the issue to the authors.</span></span>
-<span><span class="co">## This warning is displayed once every 8 hours.</span></span>
-<span><span class="co">## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span>
-<span><span class="co">## generated.</span></span>
-<span></span>
-<span><span class="co">## [[1]]</span></span></code></pre>
-<p><img src="reference/figures/unnamed-chunk-2-1.png"><!-- --></p>
-<div class="section level2">
-<h2 id="compare-with-frequentist-mgcv-result">Compare with frequentist mgcv result<a class="anchor" aria-label="anchor" href="#compare-with-frequentist-mgcv-result"></a>
-</h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mean.curve.est</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">refundBayes_SoFR</span><span class="op">$</span><span class="va">func_coef</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fl">2</span>, <span class="va">mean</span><span class="op">)</span></span>
-<span><span class="va">upper.curve.est</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">refundBayes_SoFR</span><span class="op">$</span><span class="va">func_coef</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">x</span>, prob <span class="op">=</span> <span class="fl">0.975</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="va">lower.curve.est</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">refundBayes_SoFR</span><span class="op">$</span><span class="va">func_coef</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">x</span>, prob <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">mgcv</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span></span>
-<span><span class="co">## This is mgcv 1.9-1. For overview type 'help("mgcv-package")'.</span></span></code></pre>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit_freq1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">tmat</span>, by<span class="op">=</span><span class="va">lmat</span><span class="op">*</span><span class="va">wmat</span>, bs<span class="op">=</span><span class="st">"cc"</span>, k<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">+</span><span class="va">X1</span>, data<span class="op">=</span><span class="va">data.SoFR</span>, family<span class="op">=</span><span class="st">"binomial"</span><span class="op">)</span></span>
-<span><span class="va">fit_freq2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">tmat</span>, by<span class="op">=</span><span class="va">lmat</span><span class="op">*</span><span class="va">wmat</span>, bs<span class="op">=</span><span class="st">"cc"</span>, k<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">+</span><span class="va">X1</span>, data<span class="op">=</span><span class="va">data.SoFR</span>, family<span class="op">=</span><span class="st">"binomial"</span>, method <span class="op">=</span> <span class="st">"REML"</span><span class="op">)</span></span>
-<span><span class="va">plotfot</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_freq1</span><span class="op">)</span></span>
-<span><span class="va">plotfot2</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_freq2</span>,unconditional <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">T_num</span> <span class="op">=</span> <span class="fl">100</span></span>
-<span><span class="va">plotdata</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>value<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">mean.curve.est</span>,</span>
-<span>                            <span class="va">upper.curve.est</span>,</span>
-<span>                            <span class="va">lower.curve.est</span>,</span>
-<span>                            <span class="va">plotfot</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fit</span>,</span>
-<span>                            <span class="va">plotfot</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fit</span><span class="op">+</span><span class="va">plotfot</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">se</span>,</span>
-<span>                            <span class="va">plotfot</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fit</span><span class="op">-</span><span class="va">plotfot</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">se</span>,</span>
-<span>                            <span class="va">plotfot2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fit</span>,</span>
-<span>                            <span class="va">plotfot2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fit</span><span class="op">+</span><span class="va">plotfot2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">se</span>,</span>
-<span>                            <span class="va">plotfot2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fit</span><span class="op">-</span><span class="va">plotfot2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">se</span><span class="op">)</span>,</span>
-<span>                    xmat<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span> <span class="va">T_num</span>,<span class="fl">3</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">plotfot</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span><span class="op">*</span><span class="fl">100</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                    Method<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Bayesian"</span>,<span class="va">T_num</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Bayesian"</span>,<span class="va">T_num</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Bayesian"</span>,<span class="va">T_num</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Frequentist - GCV"</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Frequentist - GCV"</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Frequentist - GCV"</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Frequentist - REML"</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Frequentist - REML"</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Frequentist - REML"</span>,<span class="fl">100</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                    type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Estimate"</span>,<span class="va">T_num</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"CI_upper"</span>,<span class="va">T_num</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"CI_lower"</span>,<span class="va">T_num</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Estimate"</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"CI_upper"</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"CI_lower"</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Estimate"</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"CI_upper"</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                           <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"CI_lower"</span>,<span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">plotdata</span>,<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">value</span>,x<span class="op">=</span><span class="va">xmat</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linetype<span class="op">=</span><span class="va">type</span>,color<span class="op">=</span><span class="va">Method</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Functional effect"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Time index"</span><span class="op">)</span><span class="op">+</span> </span>
-<span>  <span class="co">#scale_x_continuous(breaks=seq(0,1,by=3))+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_linetype_manual</a></span><span class="op">(</span>values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"twodash"</span>, <span class="st">"longdash"</span>,<span class="st">"solid"</span><span class="op">)</span>,name<span class="op">=</span><span class="st">"Line Type"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/unnamed-chunk-3-3.png"><!-- --></p>
-</div>
-</div>
-<div class="section level1">
-<h1 id="bayesian-functional-cox-regression-fcox">Bayesian Functional Cox Regression (FCox)<a class="anchor" aria-label="anchor" href="#bayesian-functional-cox-regression-fcox"></a>
-</h1>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">##  Read the example data</span></span>
-<span><span class="va">Func_Cox_Data</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"data/example_data_Cox.rds"</span><span class="op">)</span></span>
-<span><span class="va">Func_Cox_Data</span><span class="op">$</span><span class="va">wmat</span> <span class="op">=</span> <span class="va">Func_Cox_Data</span><span class="op">$</span><span class="va">MIMS</span></span>
-<span><span class="va">Func_Cox_Data</span><span class="op">$</span><span class="va">cens</span> <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">Func_Cox_Data</span><span class="op">$</span><span class="va">event</span></span>
-<span></span>
-<span><span class="co">##  Run Bayesian SOFR with the sofr_bayes() function</span></span>
-<span><span class="va">refundBayes_FCox</span> <span class="op">=</span> <span class="fu">refundBayes</span><span class="fu">::</span><span class="fu"><a href="reference/fcox_bayes.html">fcox_bayes</a></span><span class="op">(</span><span class="va">survtime</span> <span class="op">~</span> <span class="va">X1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">tmat</span>, by<span class="op">=</span><span class="va">lmat</span><span class="op">*</span><span class="va">wmat</span>, bs<span class="op">=</span><span class="st">"cc"</span>, k<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, </span>
-<span>      data <span class="op">=</span> <span class="va">Func_Cox_Data</span>, </span>
-<span>      cens <span class="op">=</span> <span class="va">Func_Cox_Data</span><span class="op">$</span><span class="va">cens</span>,</span>
-<span>      runStan <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># Whether automatically run Stan program. </span></span>
-<span>      niter <span class="op">=</span> <span class="fl">1500</span>, <span class="co"># Total number of posterior sampling.</span></span>
-<span>      nwarmup <span class="op">=</span> <span class="fl">500</span>, <span class="co"># Burn-in value.</span></span>
-<span>      nchain <span class="op">=</span> <span class="fl">3</span>, <span class="co"># Number of parallel computed chains for posterior sampling.</span></span>
-<span>      ncores <span class="op">=</span> <span class="fl">3</span></span>
-<span>      <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: There were 6 divergent transitions after warmup. See</span></span>
-<span><span class="co">## https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span></span>
-<span><span class="co">## to find out why this is a problem and how to eliminate them.</span></span>
-<span></span>
-<span><span class="co">## Warning: Examine the pairs() plot to diagnose sampling problems</span></span></code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">##  Visualization of the fitted functional coefficient</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">refundBayes_FCox</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [[1]]</span></span></code></pre>
-<p><img src="reference/figures/unnamed-chunk-4-1.png"><!-- --></p>
-</div>
-<div class="section level1">
-<h1 id="bayesian-functional-on-scalar-regression-fosr">Bayesian Functional-on-Scalar Regression (FoSR)<a class="anchor" aria-label="anchor" href="#bayesian-functional-on-scalar-regression-fosr"></a>
-</h1>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">##  Read the example data</span></span>
-<span><span class="va">FoSR_exp_data</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"data/example_data_FoSR.rds"</span><span class="op">)</span></span>
-<span><span class="va">FoSR_exp_data</span><span class="op">$</span><span class="va">y</span> <span class="op">=</span> <span class="va">FoSR_exp_data</span><span class="op">$</span><span class="va">MIMS</span></span>
-<span></span>
-<span><span class="co">##  Run Bayesian SOFR with the sofr_bayes() function</span></span>
-<span><span class="va">refundBayes_FoSR</span> <span class="op">=</span> <span class="fu">refundBayes</span><span class="fu">::</span><span class="fu"><a href="reference/fosr_bayes.html">fosr_bayes</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X</span>, </span>
-<span>      data <span class="op">=</span> <span class="va">FoSR_exp_data</span>, </span>
-<span>      runStan <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># Whether automatically run Stan program. </span></span>
-<span>      niter <span class="op">=</span> <span class="fl">1500</span>, <span class="co"># Total number of posterior sampling.</span></span>
-<span>      nwarmup <span class="op">=</span> <span class="fl">500</span>, <span class="co"># Burn-in value.</span></span>
-<span>      nchain <span class="op">=</span> <span class="fl">1</span>, <span class="co"># Number of parallel computed chains for posterior sampling.</span></span>
-<span>      ncores <span class="op">=</span> <span class="fl">1</span></span>
-<span>      <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##</span></span>
-<span><span class="co">## SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
-<span><span class="co">## Chain 1:</span></span>
-<span><span class="co">## Chain 1: Gradient evaluation took 0.001614 seconds</span></span>
-<span><span class="co">## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 16.14 seconds.</span></span>
-<span><span class="co">## Chain 1: Adjust your expectations accordingly!</span></span>
-<span><span class="co">## Chain 1:</span></span>
-<span><span class="co">## Chain 1:</span></span>
-<span><span class="co">## Chain 1: Iteration:    1 / 1500 [  0%]  (Warmup)</span></span>
-<span><span class="co">## Chain 1: Iteration:  150 / 1500 [ 10%]  (Warmup)</span></span>
-<span><span class="co">## Chain 1: Iteration:  300 / 1500 [ 20%]  (Warmup)</span></span>
-<span><span class="co">## Chain 1: Iteration:  450 / 1500 [ 30%]  (Warmup)</span></span>
-<span><span class="co">## Chain 1: Iteration:  501 / 1500 [ 33%]  (Sampling)</span></span>
-<span><span class="co">## Chain 1: Iteration:  650 / 1500 [ 43%]  (Sampling)</span></span>
-<span><span class="co">## Chain 1: Iteration:  800 / 1500 [ 53%]  (Sampling)</span></span>
-<span><span class="co">## Chain 1: Iteration:  950 / 1500 [ 63%]  (Sampling)</span></span>
-<span><span class="co">## Chain 1: Iteration: 1100 / 1500 [ 73%]  (Sampling)</span></span>
-<span><span class="co">## Chain 1: Iteration: 1250 / 1500 [ 83%]  (Sampling)</span></span>
-<span><span class="co">## Chain 1: Iteration: 1400 / 1500 [ 93%]  (Sampling)</span></span>
-<span><span class="co">## Chain 1: Iteration: 1500 / 1500 [100%]  (Sampling)</span></span>
-<span><span class="co">## Chain 1:</span></span>
-<span><span class="co">## Chain 1:  Elapsed Time: 51.492 seconds (Warm-up)</span></span>
-<span><span class="co">## Chain 1:                9.381 seconds (Sampling)</span></span>
-<span><span class="co">## Chain 1:                60.873 seconds (Total)</span></span>
-<span><span class="co">## Chain 1:</span></span>
-<span></span>
-<span><span class="co">## Warning: The largest R-hat is NA, indicating chains have not mixed.</span></span>
-<span><span class="co">## Running the chains for more iterations may help. See</span></span>
-<span><span class="co">## https://mc-stan.org/misc/warnings.html#r-hat</span></span>
-<span></span>
-<span><span class="co">## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span></span>
-<span><span class="co">## Running the chains for more iterations may help. See</span></span>
-<span><span class="co">## https://mc-stan.org/misc/warnings.html#bulk-ess</span></span>
-<span></span>
-<span><span class="co">## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span></span>
-<span><span class="co">## Running the chains for more iterations may help. See</span></span>
-<span><span class="co">## https://mc-stan.org/misc/warnings.html#tail-ess</span></span></code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">##  Visualization of the fitted functional coefficient</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">refundBayes_FoSR</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in ggplot2::geom_line(aes(type = .data$type, color = .data$type)):</span></span>
-<span><span class="co">## Ignoring unknown aesthetics: type</span></span>
-<span></span>
-<span><span class="co">## [[1]]</span></span></code></pre>
-<p><img src="reference/figures/unnamed-chunk-5-1.png"><!-- --></p>
-</div>
+<!-- badges: start -->
 
+<!-- badges: end -->
+<p><strong>refundBayes</strong> provides a convenient interface for Bayesian functional regression using <a href="https://mc-stan.org/" class="external-link">Stan</a>. The package supports models with scalar, functional, or survival outcomes and allows both scalar and functional predictors. Its formula syntax mirrors that of <a href="https://cran.r-project.org/package=mgcv" class="external-link"><code>mgcv::gam</code></a>, making it accessible to users familiar with the frequentist framework while providing full Bayesian posterior inference.</p>
+<p><strong>Documentation website:</strong> <a href="https://zirenjiang.github.io/refundBayes/" class="uri">https://zirenjiang.github.io/refundBayes/</a></p>
+<div class="section level2">
+<h2 id="supported-models">Supported Models<a class="anchor" aria-label="anchor" href="#supported-models"></a>
+</h2>
+<table class="table">
+<colgroup>
+<col width="38%">
+<col width="15%">
+<col width="25%">
+<col width="20%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Model</th>
+<th align="left">Function</th>
+<th align="left">Response</th>
+<th align="left">Predictors</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Scalar-on-Function Regression (SoFR)</td>
+<td align="left"><code><a href="reference/sofr_bayes.html">sofr_bayes()</a></code></td>
+<td align="left">Scalar</td>
+<td align="left">Functional + Scalar</td>
+</tr>
+<tr class="even">
+<td align="left">Function-on-Scalar Regression (FoSR)</td>
+<td align="left"><code><a href="reference/fosr_bayes.html">fosr_bayes()</a></code></td>
+<td align="left">Functional</td>
+<td align="left">Scalar</td>
+</tr>
+<tr class="odd">
+<td align="left">Function-on-Function Regression (FoFR)</td>
+<td align="left"><code><a href="reference/fofr_bayes.html">fofr_bayes()</a></code></td>
+<td align="left">Functional</td>
+<td align="left">Functional + Scalar</td>
+</tr>
+<tr class="even">
+<td align="left">Functional Cox Regression (FCox)</td>
+<td align="left"><code><a href="reference/fcox_bayes.html">fcox_bayes()</a></code></td>
+<td align="left">Survival (time-to-event)</td>
+<td align="left">Functional + Scalar</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>Install the development version from GitHub:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ZirenJiang/refundBayes"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zirenjiang.github.io/refundBayes/">refundBayes</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Bayesian Scalar-on-Function Regression</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sofr_bayes.html">sofr_bayes</a></span><span class="op">(</span></span>
+<span>  <span class="va">y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="fu">s</span><span class="op">(</span><span class="va">tmat</span>, by <span class="op">=</span> <span class="va">lmat</span> <span class="op">*</span> <span class="va">wmat</span>, bs <span class="op">=</span> <span class="st">"cr"</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  data    <span class="op">=</span> <span class="va">my_data</span>,</span>
+<span>  family  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">gaussian</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  niter   <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  nwarmup <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  nchain  <span class="op">=</span> <span class="fl">3</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="tutorials">Tutorials<a class="anchor" aria-label="anchor" href="#tutorials"></a>
+</h2>
+<p>Detailed vignettes with full model descriptions, prior specifications, and worked examples are available on the <a href="https://zirenjiang.github.io/refundBayes/articles/">package website</a>:</p>
+<ul>
+<li><a href="https://zirenjiang.github.io/refundBayes/articles/sofr_bayes_vignette.html">Bayesian Scalar-on-Function Regression (SoFR)</a></li>
+<li><a href="https://zirenjiang.github.io/refundBayes/articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression (FoSR)</a></li>
+<li><a href="https://zirenjiang.github.io/refundBayes/articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression (FoFR)</a></li>
+<li><a href="https://zirenjiang.github.io/refundBayes/articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression (FCox)</a></li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>If you use <strong>refundBayes</strong> in your work, please cite:</p>
+<blockquote>
+<p>Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. <em>Statistics in Medicine</em>, 44(20–22), e70265. <a href="https://doi.org/10.1002/sim.70265" class="external-link uri">https://doi.org/10.1002/sim.70265</a></p>
+</blockquote>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="va">@article</span>{<span class="ot">jiang2025tutorial</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="dt">title</span>   = {Tutorial on {B}ayesian Functional Regression Using {S}tan},</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="dt">author</span>  = {Jiang, Ziren and Crainiceanu, Ciprian and Cui, Erjia},</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="dt">journal</span> = {Statistics in Medicine},</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="dt">volume</span>  = {44},</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="dt">number</span>  = {20--22},</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="dt">pages</span>   = {e70265},</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="dt">year</span>    = {2025},</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="dt">doi</span>     = {10.1002/sim.70265}</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="related-packages">Related Packages<a class="anchor" aria-label="anchor" href="#related-packages"></a>
+</h2>
+<ul>
+<li>
+<a href="https://cran.r-project.org/package=refund" class="external-link">refund</a> – Frequentist regression with functional data</li>
+<li>
+<a href="https://cran.r-project.org/package=mgcv" class="external-link">mgcv</a> – Generalized additive models</li>
+<li>
+<a href="https://mc-stan.org/rstan/" class="external-link">rstan</a> – R interface to Stan</li>
+<li>
+<a href="https://paul-buerkner.github.io/brms/" class="external-link">brms</a> – Bayesian regression models using Stan</li>
+</ul>
+</div>
+</div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
@@ -303,7 +225,12 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/ZirenJiang/refundBayes/actions" class="external-link"><img src="https://github.com/ZirenJiang/refundBayes/actions/workflows/rhub.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
