@@ -1,10 +1,8 @@
-# refundBayes <a href="https://zirenjiang.github.io/refundBayes/"><img src="man/figures/logo.png" alt="refundBayes website" align="right" height="139"/></a>
+# Package: refundBayes <a href="https://zirenjiang.github.io/refundBayes/"></a>
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/ZirenJiang/refundBayes/actions/workflows/rhub.yaml/badge.svg)](https://github.com/ZirenJiang/refundBayes/actions)
-[![CRAN status](https://www.r-pkg.org/badges/version/refundBayes)](https://cran.r-project.org/package=refundBayes)
-[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/refundBayes)](https://cran.r-project.org/package=refundBayes)
+[![R-CMD-check](https://github.com/ZirenJiang/refundBayes/actions/workflows/rhub.yaml/badge.svg)](https://github.com/ZirenJiang/refundBayes/actions) [![CRAN status](https://www.r-pkg.org/badges/version/refundBayes)](https://cran.r-project.org/package=refundBayes) [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/refundBayes)](https://cran.r-project.org/package=refundBayes)
 
 <!-- badges: end -->
 
@@ -15,7 +13,7 @@
 ## Supported Models
 
 | Model                                  | Function       | Response                 | Predictors          |
-|:---------------------------------------|:---------------|:-------------------------|:--------------------|
+|:------------------------|:---------------|:---------------|:---------------|
 | Scalar-on-Function Regression (SoFR)   | `sofr_bayes()` | Scalar                   | Functional + Scalar |
 | Function-on-Scalar Regression (FoSR)   | `fosr_bayes()` | Functional               | Scalar              |
 | Function-on-Function Regression (FoFR) | `fofr_bayes()` | Functional               | Functional + Scalar |
@@ -34,15 +32,15 @@ remotes::install_github("ZirenJiang/refundBayes")
 
 ``` r
 library(refundBayes)
-
+data(example_data_sofr)
 # Bayesian Scalar-on-Function Regression
 fit <- sofr_bayes(
   y ~ X1 + s(tmat, by = lmat * wmat, bs = "cr", k = 10),
-  data    = my_data,
+  data    = example_data_sofr,
   family  = gaussian(),
   niter   = 2000,
   nwarmup = 1000,
-  nchain  = 3
+  nchain  = 1
 )
 
 summary(fit)
