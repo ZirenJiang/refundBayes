@@ -1,7 +1,3 @@
----
----
----
-
 # Package: <a href="https://zirenjiang.github.io/refundBayes/">refundBayes</a>
 
 <!-- badges: start -->
@@ -17,7 +13,7 @@
 ## Supported Models
 
 | Model                                  | Function       | Response                 | Predictors          |
-|:----------------------|:----------------|:----------------|:----------------|
+|:--------------------|:----------------|:----------------|:----------------|
 | Scalar-on-Function Regression (SoFR)   | `sofr_bayes()` | Scalar                   | Functional / Scalar |
 | Function-on-Scalar Regression (FoSR)   | `fosr_bayes()` | Functional               | Scalar              |
 | Function-on-Function Regression (FoFR) | `fofr_bayes()` | Functional               | Functional / Scalar |
