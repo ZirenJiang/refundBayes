@@ -3,6 +3,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/ZirenJiang/refundBayes/actions/workflows/rhub.yaml/badge.svg)](https://github.com/ZirenJiang/refundBayes/actions)
+[![CRAN status](https://www.r-pkg.org/badges/version/refundBayes)](https://cran.r-project.org/package=refundBayes)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/refundBayes)](https://cran.r-project.org/package=refundBayes)
 
 <!-- badges: end -->
 
