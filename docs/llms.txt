@@ -1,4 +1,6 @@
-# refundBayes [![refundBayes website](reference/figures/logo.png)](https://zirenjiang.github.io/refundBayes/)
+# Package: [refundBayes](https://zirenjiang.github.io/refundBayes/)
+
+------------------------------------------------------------------------
 
 **refundBayes** provides a convenient interface for Bayesian functional
 regression using [Stan](https://mc-stan.org/). The package supports
@@ -14,10 +16,10 @@ providing full Bayesian posterior inference.
 
 | Model                                  | Function                                                                           | Response                 | Predictors          |
 |:---------------------------------------|:-----------------------------------------------------------------------------------|:-------------------------|:--------------------|
-| Scalar-on-Function Regression (SoFR)   | [`sofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/sofr_bayes.md) | Scalar                   | Functional + Scalar |
+| Scalar-on-Function Regression (SoFR)   | [`sofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/sofr_bayes.md) | Scalar                   | Functional / Scalar |
 | Function-on-Scalar Regression (FoSR)   | [`fosr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fosr_bayes.md) | Functional               | Scalar              |
-| Function-on-Function Regression (FoFR) | [`fofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fofr_bayes.md) | Functional               | Functional + Scalar |
-| Functional Cox Regression (FCox)       | [`fcox_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fcox_bayes.md) | Survival (time-to-event) | Functional + Scalar |
+| Function-on-Function Regression (FoFR) | [`fofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fofr_bayes.md) | Functional               | Functional / Scalar |
+| Functional Cox Regression (FCox)       | [`fcox_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fcox_bayes.md) | Survival (time-to-event) | Functional / Scalar |
 
 ## Installation
 
@@ -32,15 +34,15 @@ remotes::install_github("ZirenJiang/refundBayes")
 
 ``` r
 library(refundBayes)
-
+data(example_data_sofr)
 # Bayesian Scalar-on-Function Regression
 fit <- sofr_bayes(
   y ~ X1 + s(tmat, by = lmat * wmat, bs = "cr", k = 10),
-  data    = my_data,
+  data    = example_data_sofr,
   family  = gaussian(),
   niter   = 2000,
   nwarmup = 1000,
-  nchain  = 3
+  nchain  = 1
 )
 
 summary(fit)
@@ -92,6 +94,17 @@ If you use **refundBayes** in your work, please cite:
 - [rstan](https://mc-stan.org/rstan/) – R interface to Stan
 - [brms](https://paul-buerkner.github.io/brms/) – Bayesian regression
   models using Stan
+
+## Contact
+
+Questions, bug reports, and feature requests are welcome. For bugs and
+feature requests, the preferred channel is the [GitHub issue
+tracker](https://github.com/ZirenJiang/refundBayes/issues), so that the
+discussion is visible to other users. For general questions,
+collaboration inquiries, or anything not suitable for a public issue,
+please contact the maintainer:
+
+- **Ziren Jiang** (maintainer) — <jian0746@umn.edu>
 
 # Package index
 

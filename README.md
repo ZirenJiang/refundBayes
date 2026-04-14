@@ -1,4 +1,8 @@
-# Package: refundBayes <a href="https://zirenjiang.github.io/refundBayes/"></a>
+---
+---
+---
+
+# Package: <a href="https://zirenjiang.github.io/refundBayes/">refundBayes</a>
 
 <!-- badges: start -->
 
@@ -13,11 +17,11 @@
 ## Supported Models
 
 | Model                                  | Function       | Response                 | Predictors          |
-|:------------------------|:---------------|:---------------|:---------------|
-| Scalar-on-Function Regression (SoFR)   | `sofr_bayes()` | Scalar                   | Functional + Scalar |
+|:----------------------|:----------------|:----------------|:----------------|
+| Scalar-on-Function Regression (SoFR)   | `sofr_bayes()` | Scalar                   | Functional / Scalar |
 | Function-on-Scalar Regression (FoSR)   | `fosr_bayes()` | Functional               | Scalar              |
-| Function-on-Function Regression (FoFR) | `fofr_bayes()` | Functional               | Functional + Scalar |
-| Functional Cox Regression (FCox)       | `fcox_bayes()` | Survival (time-to-event) | Functional + Scalar |
+| Function-on-Function Regression (FoFR) | `fofr_bayes()` | Functional               | Functional / Scalar |
+| Functional Cox Regression (FCox)       | `fcox_bayes()` | Survival (time-to-event) | Functional / Scalar |
 
 ## Installation
 
@@ -81,3 +85,9 @@ If you use **refundBayes** in your work, please cite:
 -   [mgcv](https://cran.r-project.org/package=mgcv) -- Generalized additive models
 -   [rstan](https://mc-stan.org/rstan/) -- R interface to Stan
 -   [brms](https://paul-buerkner.github.io/brms/) -- Bayesian regression models using Stan
+
+## Contact
+
+Questions, bug reports, and feature requests are welcome. For bugs and feature requests, the preferred channel is the [GitHub issue tracker](https://github.com/ZirenJiang/refundBayes/issues), so that the discussion is visible to other users. For general questions, collaboration inquiries, or anything not suitable for a public issue, please contact the maintainer:
+
+-   **Ziren Jiang** (maintainer) --- [jian0746\@umn.edu](mailto:jian0746@umn.edu)

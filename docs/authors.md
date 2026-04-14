@@ -11,18 +11,19 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/ZirenJiang/refundBayes/blob/HEAD/DESCRIPTION)
+[`inst/CITATION`](https://github.com/ZirenJiang/refundBayes/blob/HEAD/inst/CITATION)
 
-Jiang Z, Cui E (2026). *refundBayes: Bayesian Regression with Functional
-Data*. R package version 0.5.1,
-https://github.com/ZirenJiang/refundBayes,
-<https://zirenjiang.github.io/refundBayes/>.
+Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian
+Functional Regression Using Stan. Statistics in Medicine, 44(20-22),
+e70265. doi:10.1002/sim.70265
 
-    @Manual{,
-      title = {refundBayes: Bayesian Regression with Functional Data},
-      author = {Ziren Jiang and Erjia Cui},
-      year = {2026},
-      note = {R package version 0.5.1,
-        https://github.com/ZirenJiang/refundBayes},
-      url = {https://zirenjiang.github.io/refundBayes/},
+    @Article{,
+      title = {Tutorial on Bayesian Functional Regression Using Stan},
+      author = {Ziren Jiang and Ciprian Crainiceanu and Erjia Cui},
+      journal = {Statistics in Medicine},
+      year = {2025},
+      volume = {44},
+      number = {20--22},
+      pages = {e70265},
+      doi = {10.1002/sim.70265},
     }

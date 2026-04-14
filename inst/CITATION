@@ -1,0 +1,23 @@
+citHeader("To cite refundBayes in publications, please use:")
+
+bibentry(
+  bibtype = "Article",
+  title   = "Tutorial on Bayesian Functional Regression Using Stan",
+  author  = c(
+    person("Ziren", "Jiang"),
+    person("Ciprian", "Crainiceanu"),
+    person("Erjia", "Cui")
+  ),
+  journal = "Statistics in Medicine",
+  year    = "2025",
+  volume  = "44",
+  number  = "20--22",
+  pages   = "e70265",
+  doi     = "10.1002/sim.70265",
+  textVersion = paste(
+    "Jiang, Z., Crainiceanu, C., and Cui, E. (2025).",
+    "Tutorial on Bayesian Functional Regression Using Stan.",
+    "Statistics in Medicine, 44(20-22), e70265.",
+    "doi:10.1002/sim.70265"
+  )
+)

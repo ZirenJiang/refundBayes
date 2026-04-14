@@ -64,8 +64,3 @@ articles:
   - fofr_bayes_vignette
   - fcox_bayes_vignette
 
-news:
-  releases:
-  - text: "Version 0.5"
-    href: https://github.com/ZirenJiang/refundBayes/releases/tag/v0.4
-

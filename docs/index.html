@@ -45,15 +45,7 @@
     <li><a class="dropdown-item" href="articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression with `refundBayes::fcox_bayes`</a></li>
   </ul>
 </li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-news">
-<li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://github.com/ZirenJiang/refundBayes/releases/tag/v0.4">Version 0.5</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="news/index.html">Changelog</a></li>
-  </ul>
-</li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -67,9 +59,10 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="refundbayes-">refundBayes <a href="https://zirenjiang.github.io/refundBayes/"><img src="reference/figures/logo.png" alt="refundBayes website" align="right" height="139"></a>
-<a class="anchor" aria-label="anchor" href="#refundbayes-"></a>
+  <main id="main" class="col-md-9"><hr>
+<div class="section level1">
+<div class="page-header"><h1 id="package-refundbayes">Package: <a href="https://zirenjiang.github.io/refundBayes/">refundBayes</a>
+<a class="anchor" aria-label="anchor" href="#package-refundbayes"></a>
 </h1></div>
 <!-- badges: start -->
 
@@ -81,10 +74,10 @@
 </h2>
 <table class="table">
 <colgroup>
-<col width="38%">
-<col width="15%">
-<col width="25%">
-<col width="20%">
+<col width="31%">
+<col width="22%">
+<col width="22%">
+<col width="22%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Model</th>
@@ -97,7 +90,7 @@
 <td align="left">Scalar-on-Function Regression (SoFR)</td>
 <td align="left"><code><a href="reference/sofr_bayes.html">sofr_bayes()</a></code></td>
 <td align="left">Scalar</td>
-<td align="left">Functional + Scalar</td>
+<td align="left">Functional / Scalar</td>
 </tr>
 <tr class="even">
 <td align="left">Function-on-Scalar Regression (FoSR)</td>
@@ -109,13 +102,13 @@
 <td align="left">Function-on-Function Regression (FoFR)</td>
 <td align="left"><code><a href="reference/fofr_bayes.html">fofr_bayes()</a></code></td>
 <td align="left">Functional</td>
-<td align="left">Functional + Scalar</td>
+<td align="left">Functional / Scalar</td>
 </tr>
 <tr class="even">
 <td align="left">Functional Cox Regression (FCox)</td>
 <td align="left"><code><a href="reference/fcox_bayes.html">fcox_bayes()</a></code></td>
 <td align="left">Survival (time-to-event)</td>
-<td align="left">Functional + Scalar</td>
+<td align="left">Functional / Scalar</td>
 </tr>
 </tbody>
 </table>
@@ -133,15 +126,15 @@
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zirenjiang.github.io/refundBayes/">refundBayes</a></span><span class="op">)</span></span>
-<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">example_data_sofr</span><span class="op">)</span></span>
 <span><span class="co"># Bayesian Scalar-on-Function Regression</span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sofr_bayes.html">sofr_bayes</a></span><span class="op">(</span></span>
 <span>  <span class="va">y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="fu">s</span><span class="op">(</span><span class="va">tmat</span>, by <span class="op">=</span> <span class="va">lmat</span> <span class="op">*</span> <span class="va">wmat</span>, bs <span class="op">=</span> <span class="st">"cr"</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
-<span>  data    <span class="op">=</span> <span class="va">my_data</span>,</span>
+<span>  data    <span class="op">=</span> <span class="va">example_data_sofr</span>,</span>
 <span>  family  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">gaussian</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  niter   <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>  nwarmup <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  nchain  <span class="op">=</span> <span class="fl">3</span></span>
+<span>  nchain  <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
@@ -190,7 +183,18 @@
 <a href="https://paul-buerkner.github.io/brms/" class="external-link">brms</a> – Bayesian regression models using Stan</li>
 </ul>
 </div>
+<div class="section level2">
+<h2 id="contact">Contact<a class="anchor" aria-label="anchor" href="#contact"></a>
+</h2>
+<p>Questions, bug reports, and feature requests are welcome. For bugs and feature requests, the preferred channel is the <a href="https://github.com/ZirenJiang/refundBayes/issues" class="external-link">GitHub issue tracker</a>, so that the discussion is visible to other users. For general questions, collaboration inquiries, or anything not suitable for a public issue, please contact the maintainer:</p>
+<ul>
+<li>
+<strong>Ziren Jiang</strong> (maintainer) — <a href="mailto:jian0746@umn.edu">jian0746@umn.edu</a>
+</li>
+</ul>
 </div>
+</div>
+
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
@@ -229,6 +233,8 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/ZirenJiang/refundBayes/actions" class="external-link"><img src="https://github.com/ZirenJiang/refundBayes/actions/workflows/rhub.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://cran.r-project.org/package=refundBayes" class="external-link"><img src="https://www.r-pkg.org/badges/version/refundBayes" alt="CRAN status"></a></li>
+<li><a href="https://cran.r-project.org/package=refundBayes" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/refundBayes" alt="CRAN downloads"></a></li>
 </ul>
 </div>
 
