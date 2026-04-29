@@ -107,7 +107,6 @@
 #' @import mgcv
 #' @import splines2
 #' @import rstan
-#' @importFrom brms brmsformula
 #' @importFrom refund fpca.face
 #' @importFrom stats gaussian
 #' @export fofr_bayes

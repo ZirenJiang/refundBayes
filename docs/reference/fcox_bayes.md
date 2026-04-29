@@ -39,8 +39,13 @@ fcox_bayes(
 - joint_FPCA:
 
   A True/False vector of the same length of the number of functional
-  predictors, indicating whether jointly modeling FPCA for the
-  functional predictors. Default to NULL.
+  predictors, indicating whether to jointly model the functional
+  predictor via FPCA together with the survival model. When the entry is
+  `TRUE`, the corresponding observed functional predictor is replaced by
+  an FPCA representation, and the FPC scores are sampled jointly with
+  the regression coefficients, following Section 4 of Jiang et al.
+  (2025). Default to `NULL` (no joint FPCA, equivalent to
+  `rep(FALSE, n_func)`).
 
 - intercept:
 

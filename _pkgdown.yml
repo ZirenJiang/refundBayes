@@ -48,6 +48,12 @@ reference:
   contents:
   - fcox_bayes
 
+- title: "Functional Principal Component Analysis"
+  desc: >
+    Bayesian FPCA decomposition of a functional outcome.
+  contents:
+  - fpca_bayes
+
 - title: "Post-fitting"
   desc: "Methods for summarising and plotting fitted models."
   contents:
@@ -63,4 +69,6 @@ articles:
   - fosr_bayes_vignette
   - fofr_bayes_vignette
   - fcox_bayes_vignette
+  - fpca_bayes_vignette
+  - joint_FPCA_vignette
 

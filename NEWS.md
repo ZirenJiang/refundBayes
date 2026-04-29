@@ -1,3 +1,40 @@
+# refundBayes 0.6.0
+
+## New features
+
+* Added `fpca_bayes()` for Bayesian Functional Principal Component Analysis,
+  modelling a functional outcome as μ(t) plus a low-rank FPC expansion with
+  posterior inference on the mean function, FPC scores, eigenvalue standard
+  deviations, and the residual SD. Initial eigenfunctions are obtained from
+  `refund::fpca.sc()` and held fixed during sampling.
+* Added a `joint_FPCA` argument to `sofr_bayes()`, `fcox_bayes()`, and
+  `fofr_bayes()` for jointly modelling each functional predictor via FPCA
+  alongside the regression coefficients. When enabled, the predictor is
+  replaced by an FPCA representation and FPC scores are sampled jointly
+  with β(·), propagating measurement-error uncertainty into the posterior
+  of the regression coefficient (errors-in-variables-aware fit).
+
+## Documentation
+
+* Added a dedicated vignette for each new feature:
+  *Bayesian Functional Principal Component Analysis* and
+  *Joint FPCA Modeling in refundBayes* (covering joint FPCA usage in SoFR,
+  FCox, and FoFR).
+* Expanded the pkgdown site to include reference entries and articles for
+  `fpca_bayes()` and the Joint-FPCA option.
+* Annotated the Quick Start example in `README.md` with inline comments
+  explaining the formula syntax and sampler arguments.
+* Aligned vignette YAML titles with their `\VignetteIndexEntry` to silence
+  `rmarkdown::html_vignette` title-mismatch warnings.
+
+## Dependencies
+
+* Removed `brms` and `dplyr` from `Imports`. The two `brms::brmsformula()`
+  call-sites were replaced with `stats::as.formula()`, and the `.data`
+  pronoun used in ggplot calls is already re-exported by `ggplot2`. This
+  trims the install dependency tree noticeably (brms transitively pulled
+  in `posterior`, `bridgesampling`, `loo`, `bayesplot`, etc.).
+
 # refundBayes 0.5.1
 
 ## New features
@@ -8,9 +45,8 @@
   basis with dual-direction smoothness (random-effect reparameterisation in
   the predictor direction and a penalty-matrix prior in the response
   direction).
-* Added a dedicated vignette *Bayesian Function-on-Function Regression
-  (FoFR)* with the full model specification, prior table, and a worked
-  example.
+* Added a dedicated vignette *Bayesian Function-on-Function Regression*
+  with the full model specification, prior table, and a worked example.
 * Expanded the pkgdown site to include the new FoFR reference entry and
   vignette.
 

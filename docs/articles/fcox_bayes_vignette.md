@@ -1,4 +1,4 @@
-# Bayesian Functional Cox Regression with \`refundBayes::fcox_bayes\`
+# Bayesian Functional Cox Regression
 
 ## Introduction
 
@@ -16,7 +16,14 @@ published in *Statistics in Medicine*.
 
 ## Install the `refundBayes` Package
 
-The `refundBayes` package can be installed from GitHub:
+The `refundBayes` package can be installed from CRAN:
+
+``` r
+install.packages("refundBayes")
+```
+
+For the latest version of the `refundBayes` package, users can install
+from GitHub:
 
 ``` r
 library(remotes)
@@ -198,15 +205,30 @@ where most components are shared with the SoFR model, except for the Cox
 likelihood (first line) and the baseline hazard specification via
 M-splines with a Dirichlet prior on $\mathbf{c}$ (last two lines).
 
-### Joint Modeling with FPCA (Optional)
+### Optional: Joint FPCA Modeling
 
 When functional predictors are observed with measurement error, the
 [`fcox_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fcox_bayes.md)
 function supports a joint modeling approach that simultaneously
 estimates FPCA scores and fits the Cox regression model. In this case,
-the model regresses on the latent trajectory $D_{i}(t)$ rather than the
-observed (noisy) function $W_{i}(t) = D_{i}(t) + \epsilon_{i}(t)$,
-properly accounting for the uncertainty in the score estimates.
+the model regresses on the latent trajectory $D_{i}(s)$ rather than the
+observed (noisy) function $W_{i}(s) = D_{i}(s) + \epsilon_{i}(s)$,
+properly accounting for the uncertainty in the score estimates and
+avoiding the errors-in-variables attenuation that follows from plugging
+$W_{i}(s)$ directly into the integral $\int W_{i}(s)\beta(s)\, ds$.
+
+The joint FPCA option is enabled via the `joint_FPCA` argument and is
+shared with
+[`sofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/sofr_bayes.md)
+and
+[`fofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fofr_bayes.md).
+The full model specification (FPCA likelihood for the predictor,
+FPC-score prior centered on the initial
+[`refund::fpca.sc()`](https://rdrr.io/pkg/refund/man/fpca.sc.html)
+scores, joint Stan code, and the resulting Cox-with-joint-FPCA program),
+together with a worked survival example, is presented in the dedicated
+**[Joint FPCA
+vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.md)**.
 
 ## The `fcox_bayes()` Function
 
@@ -229,18 +251,18 @@ fcox_bayes(
 
 ### Arguments
 
-| Argument     | Description                                                                                                                                                                                                                                                                                                                                                                    |
-|:-------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `formula`    | Functional regression formula, using the same syntax as [`mgcv::gam`](https://rdrr.io/pkg/mgcv/man/gam.html). The left-hand side should be the observed survival time $Y_{i} = \min\left( T_{i},C_{i} \right)$. Functional predictors are specified using the [`s()`](https://rdrr.io/pkg/mgcv/man/s.html) term with `by = lmat * wmat` to encode the Riemann sum integration. |
-| `data`       | A data frame containing all scalar and functional variables used in the model, as well as the survival time as the response variable.                                                                                                                                                                                                                                          |
-| `cens`       | A binary vector indicating censoring status for each subject, following the convention: $\delta_{i} = 0$ if the event is observed and $\delta_{i} = 1$ if censored. Must have the same length as the number of observations in `data`.                                                                                                                                         |
-| `joint_FPCA` | A logical (`TRUE`/`FALSE`) vector of the same length as the number of functional predictors, indicating whether to jointly model FPCA for each functional predictor. Default is `NULL`, which sets all entries to `FALSE` (no joint FPCA).                                                                                                                                     |
-| `intercept`  | Logical. Whether to include an intercept term in the linear predictor. Default is `FALSE`, because the intercept is not identifiable simultaneously with the M-spline coefficients for the baseline hazard (see the Identifiability Constraint section above).                                                                                                                 |
-| `runStan`    | Logical. Whether to run the Stan program. If `FALSE`, the function only generates the Stan code and data without sampling. Default is `TRUE`.                                                                                                                                                                                                                                  |
-| `niter`      | Total number of Bayesian posterior sampling iterations (including warmup). Default is `3000`.                                                                                                                                                                                                                                                                                  |
-| `nwarmup`    | Number of warmup (burn-in) iterations. Default is `1000`.                                                                                                                                                                                                                                                                                                                      |
-| `nchain`     | Number of Markov chains for posterior sampling. Default is `3`.                                                                                                                                                                                                                                                                                                                |
-| `ncores`     | Number of CPU cores to use when executing the chains in parallel. Default is `1`.                                                                                                                                                                                                                                                                                              |
+| Argument     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|:-------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `formula`    | Functional regression formula, using the same syntax as [`mgcv::gam`](https://rdrr.io/pkg/mgcv/man/gam.html). The left-hand side should be the observed survival time $Y_{i} = \min\left( T_{i},C_{i} \right)$. Functional predictors are specified using the [`s()`](https://rdrr.io/pkg/mgcv/man/s.html) term with `by = lmat * wmat` to encode the Riemann sum integration.                                                                                                                                                                                                                |
+| `data`       | A data frame containing all scalar and functional variables used in the model, as well as the survival time as the response variable.                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `cens`       | A binary vector indicating censoring status for each subject, following the convention: $\delta_{i} = 0$ if the event is observed and $\delta_{i} = 1$ if censored. Must have the same length as the number of observations in `data`.                                                                                                                                                                                                                                                                                                                                                        |
+| `joint_FPCA` | A logical (`TRUE`/`FALSE`) vector of the same length as the number of functional predictors, indicating whether to jointly model FPCA for each functional predictor. When `TRUE`, the observed functional predictor is replaced by an FPCA representation and its FPC scores are sampled jointly with the survival model (errors-in-variables-aware fit). See the [Joint FPCA vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.md) for the model specification and a worked Cox example. Default is `NULL`, which sets all entries to `FALSE` (no joint FPCA). |
+| `intercept`  | Logical. Whether to include an intercept term in the linear predictor. Default is `FALSE`, because the intercept is not identifiable simultaneously with the M-spline coefficients for the baseline hazard (see the Identifiability Constraint section above).                                                                                                                                                                                                                                                                                                                                |
+| `runStan`    | Logical. Whether to run the Stan program. If `FALSE`, the function only generates the Stan code and data without sampling. Default is `TRUE`.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `niter`      | Total number of Bayesian posterior sampling iterations (including warmup). Default is `3000`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `nwarmup`    | Number of warmup (burn-in) iterations. Default is `1000`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `nchain`     | Number of Markov chains for posterior sampling. Default is `3`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `ncores`     | Number of CPU cores to use when executing the chains in parallel. Default is `1`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 ### Return Value
 
@@ -477,7 +499,9 @@ the standard `data`, `parameters`, and `model` blocks.
 - **Joint FPCA**: When functional predictors are measured with
   substantial noise, consider setting `joint_FPCA = TRUE` for the
   relevant predictor to jointly estimate FPCA scores and regression
-  coefficients within the Cox model.
+  coefficients within the Cox model. See the [Joint FPCA
+  vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.md)
+  for details.
 
 ## References
 

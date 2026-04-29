@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Bayesian Function-on-Function Regression with `refundBayes::fofr_bayes` • refundBayes</title>
+<title>Bayesian Function-on-Function Regression • refundBayes</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Bayesian Function-on-Function Regression with `refundBayes::fofr_bayes`">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Bayesian Function-on-Function Regression">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -36,9 +36,11 @@
 <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/sofr_bayes_vignette.html">Bayesian Scalar-on-Function Regression with `refundBayes::sofr_bayes`</a></li>
-    <li><a class="dropdown-item" href="../articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression with `refundBayes::fosr_bayes`</a></li>
-    <li><a class="dropdown-item" href="../articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression with `refundBayes::fofr_bayes`</a></li>
-    <li><a class="dropdown-item" href="../articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression with `refundBayes::fcox_bayes`</a></li>
+    <li><a class="dropdown-item" href="../articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/fpca_bayes_vignette.html">Bayesian Functional Principal Component Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/joint_FPCA_vignette.html">Joint FPCA Modeling in refundBayes</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -61,7 +63,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Bayesian Function-on-Function Regression with `refundBayes::fofr_bayes`</h1>
+      <h1>Bayesian Function-on-Function Regression</h1>
             
             <h4 data-toc-skip class="date">2026-04-06</h4>
       
@@ -99,9 +101,12 @@ Medicine</em>.</p>
 <div class="section level2">
 <h2 id="install-the-refundbayes-package">Install the <code>refundBayes</code> Package<a class="anchor" aria-label="anchor" href="#install-the-refundbayes-package"></a>
 </h2>
-<p>The <code>refundBayes</code> package can be installed from
-GitHub:</p>
+<p>The <code>refundBayes</code> package can be installed from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"refundBayes"</span><span class="op">)</span></span></code></pre></div>
+<p>For the latest version of the <code>refundBayes</code> package, users
+can install from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"https://github.com/ZirenJiang/refundBayes"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -471,6 +476,30 @@ and FPCA scores.</p>
 </div>
 </div>
 <div class="section level3">
+<h3 id="optional-joint-fpca-modeling">Optional: Joint FPCA Modeling<a class="anchor" aria-label="anchor" href="#optional-joint-fpca-modeling"></a>
+</h3>
+<p>The default <code><a href="../reference/fofr_bayes.html">fofr_bayes()</a></code> model treats the observed
+functional predictor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W_i(s)</annotation></semantics></math>
+as if it were observed without error. When the predictor curves are
+noisy, this attenuates the bivariate coefficient
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta(s,t)</annotation></semantics></math>
+toward zero (errors-in-variables bias) and shrinks the credible-band
+width. The <code>joint_FPCA</code> argument activates an alternative
+model in which
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W_i(s)</annotation></semantics></math>
+is replaced by an FPCA representation and the subject-specific FPC
+scores are sampled <strong>jointly</strong> with the bivariate
+coefficient, propagating the FPCA uncertainty into the posterior of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta(s,t)</annotation></semantics></math>.</p>
+<p>The same <code>joint_FPCA</code> argument is available in
+<code><a href="../reference/sofr_bayes.html">sofr_bayes()</a></code> and <code><a href="../reference/fcox_bayes.html">fcox_bayes()</a></code>. The full model
+specification (FPCA likelihood for the predictor, FPC-score prior
+centered on the initial <code><a href="https://rdrr.io/pkg/refund/man/fpca.sc.html" class="external-link">refund::fpca.sc()</a></code> scores, the
+resulting Stan program with bivariate coefficients in the FPC basis, and
+a worked FoFR example) is presented in the dedicated <strong><a href="joint_FPCA_vignette.html">Joint FPCA vignette</a></strong>.</p>
+</div>
+<div class="section level3">
 <h3 id="relationship-to-sofr-and-fosr">Relationship to SoFR and FoSR<a class="anchor" aria-label="anchor" href="#relationship-to-sofr-and-fosr"></a>
 </h3>
 <p>The FoFR model nests both the SoFR and FoSR models as special
@@ -551,7 +580,7 @@ functional coefficient reconstruction.</li>
 <div class="section level3">
 <h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fofr_bayes.html">fofr_bayes</a></span><span class="op">(</span></span>
 <span>  <span class="va">formula</span>,</span>
 <span>  <span class="va">data</span>,</span>
@@ -603,8 +632,12 @@ matrices, respectively.</td>
 <td align="left"><code>joint_FPCA</code></td>
 <td align="left">A logical (<code>TRUE</code>/<code>FALSE</code>) vector
 of the same length as the number of functional predictors, indicating
-whether to jointly model FPCA for each functional predictor. Default is
-<code>NULL</code>, which sets all entries to <code>FALSE</code>.</td>
+whether to jointly model FPCA for each functional predictor. When
+<code>TRUE</code>, the observed functional predictor is replaced by an
+FPCA representation and its FPC scores are sampled jointly with the
+bivariate coefficient (errors-in-variables-aware fit). See the <a href="joint_FPCA_vignette.html">Joint FPCA vignette</a> for the model
+specification and a worked FoFR example. Default is <code>NULL</code>,
+which sets all entries to <code>FALSE</code> (no joint FPCA).</td>
 </tr>
 <tr class="even">
 <td align="left"><code>runStan</code></td>
@@ -730,7 +763,7 @@ compatibility with the <code><a href="../reference/plot.refundBayes.html">plot.r
 <p>The formula combines the FoSR syntax (functional response on the
 left-hand side) with the SoFR syntax (functional predictors via
 <code><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s()</a></code> terms on the right-hand side):</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Y_mat</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">sindex</span>, by <span class="op">=</span> <span class="va">X_func</span>, bs <span class="op">=</span> <span class="st">"cr"</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p>where:</p>
 <ul>
@@ -794,7 +827,7 @@ and a scalar predictor coefficient function
 <div class="section level3">
 <h3 id="simulate-data">Simulate Data<a class="anchor" aria-label="anchor" href="#simulate-data"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zirenjiang.github.io/refundBayes/">refundBayes</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
@@ -862,7 +895,7 @@ matrix of predictor-domain grid points (identical rows).</li>
 <div class="section level3">
 <h3 id="fit-the-bayesian-fofr-model">Fit the Bayesian FoFR Model<a class="anchor" aria-label="anchor" href="#fit-the-bayesian-fofr-model"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_fofr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fofr_bayes.html">fofr_bayes</a></span><span class="op">(</span></span>
 <span>  formula     <span class="op">=</span> <span class="va">Y_mat</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">sindex</span>, by <span class="op">=</span> <span class="va">X_func</span>, bs <span class="op">=</span> <span class="st">"cr"</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
 <span>  data        <span class="op">=</span> <span class="va">dat</span>,</span>
@@ -915,7 +948,7 @@ the full setup with multiple chains and convergence diagnostics.</p>
 is stored as a 3-d array in <code>bivar_func_coef</code>. The posterior
 mean surface and comparison with the truth can be visualised using
 heatmaps:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Posterior mean of the bivariate coefficient</span></span>
 <span><span class="va">beta_est</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">fit_fofr</span><span class="op">$</span><span class="va">bivar_func_coef</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span></span>
 <span></span>
@@ -949,7 +982,7 @@ type <code>"surface"</code>.</p>
 </h4>
 <p>The estimated scalar predictor coefficient function can be plotted
 with pointwise credible intervals:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">alpha_est</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">fit_fofr</span><span class="op">$</span><span class="va">scalar_func_coef</span><span class="op">[</span>, <span class="fl">1</span>, <span class="op">]</span>, <span class="fl">2</span>, <span class="va">mean</span><span class="op">)</span></span>
 <span><span class="va">alpha_lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">fit_fofr</span><span class="op">$</span><span class="va">scalar_func_coef</span><span class="op">[</span>, <span class="fl">1</span>, <span class="op">]</span>, <span class="fl">2</span>,</span>
 <span>                     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.025</span><span class="op">)</span><span class="op">)</span></span>
@@ -980,7 +1013,7 @@ at fixed values of
 or
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
 extract slices from the posterior:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fix s at the midpoint of the predictor domain and plot beta(s_mid, t)</span></span>
 <span><span class="va">s_mid_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">sindex</span> <span class="op">-</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -1009,7 +1042,7 @@ extract slices from the posterior:</p>
 <div class="section level3">
 <h3 id="numerical-summary">Numerical Summary<a class="anchor" aria-label="anchor" href="#numerical-summary"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RMSE of the bivariate coefficient surface</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"RMSE of beta(s,t):"</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">beta_est</span> <span class="op">-</span> <span class="va">beta_true</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span></span>
@@ -1021,7 +1054,7 @@ extract slices from the posterior:</p>
 </h3>
 <p>Setting <code>runStan = FALSE</code> allows you to inspect or modify
 the Stan code before running the model:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Generate Stan code without running the sampler</span></span>
 <span><span class="va">fofr_code</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fofr_bayes.html">fofr_bayes</a></span><span class="op">(</span></span>
 <span>  formula     <span class="op">=</span> <span class="va">Y_mat</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">sindex</span>, by <span class="op">=</span> <span class="va">X_func</span>, bs <span class="op">=</span> <span class="st">"cr"</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
@@ -1084,7 +1117,7 @@ indicate issues.</p></li>
 traceplots and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>R</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{R}</annotation></semantics></math>
 statistics using the <code>rstan</code> package:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-method-traceplot.html" class="external-link">traceplot</a></span><span class="op">(</span><span class="va">fit_fofr</span><span class="op">$</span><span class="va">stanfit</span>, pars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sigma_eps"</span>, <span class="st">"sigmabr_1"</span>, <span class="st">"sigma_t_1"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit_fofr</span><span class="op">$</span><span class="va">stanfit</span>, pars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sigma_eps"</span>, <span class="st">"sigmabr_1"</span>, <span class="st">"sigma_t_1"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Warnings about bulk ESS, tail ESS, or
@@ -1101,7 +1134,136 @@ functional predictors can be included by adding additional
 receives its own pair of smoothing parameters
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>s</mi><mo>,</mo><mi>j</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma_{s,j}^2</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>t</mi><mo>,</mo><mi>j</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma_{t,j}^2</annotation></semantics></math>).</p></li>
+<li><p><strong>Joint FPCA</strong>: When functional predictors are
+measured with substantial noise, consider setting
+<code>joint_FPCA = TRUE</code> for the relevant predictor to jointly
+estimate FPCA scores and the bivariate coefficient. See the <a href="joint_FPCA_vignette.html">Joint FPCA vignette</a> for
+details.</p></li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="simulation-study-bayesian-vs-frequentist-fofr">Simulation Study: Bayesian vs Frequentist FoFR<a class="anchor" aria-label="anchor" href="#simulation-study-bayesian-vs-frequentist-fofr"></a>
+</h2>
+<p>To benchmark <code><a href="../reference/fofr_bayes.html">fofr_bayes()</a></code> against the standard
+frequentist function-on-function regression fit, we ran a simulation
+study comparing posterior-mean prediction against the penalised
+tensor-product estimator implemented in <code><a href="https://rdrr.io/pkg/refund/man/pffr.html" class="external-link">refund::pffr()</a></code>. The
+full simulation script is shipped as
+<code>Simulation/FoFR_Simulation_V3.R</code>, with a stand-alone Stan
+program in <code>Simulation/StanFoFR_Gaussian.stan</code>.</p>
+<div class="section level3">
+<h3 id="simulation-setup">Simulation Setup<a class="anchor" aria-label="anchor" href="#simulation-setup"></a>
+</h3>
+<p>Functional observations were generated from a function-on-function
+model <strong>without</strong> scalar predictors:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><mfrac><mn>1</mn><mi>L</mi></mfrac><munderover><mo>∑</mo><mrow><mi>l</mi><mo>=</mo><mn>1</mn></mrow><mi>L</mi></munderover><msub><mi>W</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mi>l</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mi>β</mi><mtext mathvariant="normal">true</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mi>l</mi></msub><mo>,</mo><msub><mi>t</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo>+</mo><mspace width="0.278em"></mspace><msub><mi>ϵ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>ϵ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mover><mo>∼</mo><mtext mathvariant="normal">iid</mtext></mover><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msup><mn>0.5</mn><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+Y_i(t_m) \;=\; \frac{1}{L}\sum_{l=1}^{L} W_i(s_l)\,\beta_{\text{true}}(s_l, t_m) \;+\; \epsilon_i(t_m), \qquad \epsilon_i(t_m) \stackrel{\text{iid}}{\sim} N(0, 0.5^2),
+</annotation></semantics></math></p>
+<p>on uniform grids of size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><mi>M</mi><mo>=</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">L = M = 30</annotation></semantics></math>
+over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math>.
+Functional predictors
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W_i(s)</annotation></semantics></math>
+were generated as four-component Fourier expansions with eigenvalues
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>2.5</mn><mo>,</mo><mn>2.5</mn><mo>,</mo><mn>2.5</mn><mo>,</mo><mn>2.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(2.5, 2.5, 2.5, 2.5)</annotation></semantics></math>.
+Two true bivariate-coefficient surfaces and three signal-strength levels
+were considered:</p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Factor</th>
+<th align="left">Levels</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Sample size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+</td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mo>,</mo><mspace width="0.278em"></mspace><mn>200</mn><mo>,</mo><mspace width="0.278em"></mspace><mn>500</mn></mrow><annotation encoding="application/x-tex">100,\; 200,\; 500</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td align="left">
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>-surface
+type</td>
+<td align="left">type 1: separable
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mtext mathvariant="normal">true</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>τ</mi><mspace width="0.167em"></mspace><mi>s</mi><mspace width="0.167em"></mspace><msup><mi>t</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\beta_{\text{true}}(s,t) = \tau\,s\,t^2</annotation></semantics></math>;
+type 2: Gaussian bump
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mtext mathvariant="normal">true</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>τ</mi><mspace width="0.167em"></mspace><mo>exp</mo><mo stretchy="false" form="prefix">{</mo><mo>−</mo><mn>5</mn><mrow><mo stretchy="true" form="prefix">[</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>−</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>+</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>−</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\beta_{\text{true}}(s,t) = \tau\,\exp\{-5[(s-0.5)^2 + (t-0.5)^2]\}</annotation></semantics></math>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">Signal-strength multiplier
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+</td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>,</mo><mspace width="0.278em"></mspace><mn>5</mn><mo>,</mo><mspace width="0.278em"></mspace><mn>10</mn></mrow><annotation encoding="application/x-tex">1,\; 5,\; 10</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p>Each cell of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>2</mn><mo>×</mo><mn>3</mn><mo>=</mo><mn>18</mn></mrow><annotation encoding="application/x-tex">3 \times 2 \times 3 = 18</annotation></semantics></math>
+design was replicated approximately 500 times, giving roughly 9000 fits
+per method.</p>
+</div>
+<div class="section level3">
+<h3 id="comparator-methods">Comparator Methods<a class="anchor" aria-label="anchor" href="#comparator-methods"></a>
+</h3>
+<ul>
+<li>
+<strong>Frequentist baseline</strong> – <code><a href="https://rdrr.io/pkg/refund/man/pffr.html" class="external-link">refund::pffr()</a></code>
+with a single
+<code>ff(X_func, xind = sgrid, integration = "riemann", splinepars = list(bs = "ps", k = c(10, 10)))</code>
+term and the response indexed by <code>yind = tgrid</code>. The
+<code>integration = "riemann"</code> option is critical here: the
+data-generating quadrature is left-Riemann with uniform weight
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>L</mi></mrow><annotation encoding="application/x-tex">1/L</annotation></semantics></math>,
+and matching this in <code>pffr()</code> (rather than the default
+Simpson rule) keeps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>β</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\beta}</annotation></semantics></math>
+on the same pointwise scale as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mtext mathvariant="normal">true</mtext></msub><annotation encoding="application/x-tex">\beta_{\text{true}}</annotation></semantics></math>
+during recovery comparisons.</li>
+<li>
+<strong>Bayesian model</strong> –
+<code><a href="../reference/fofr_bayes.html">refundBayes::fofr_bayes()</a></code> (or the equivalent standalone
+Stan program in <code>Simulation/StanFoFR_Gaussian.stan</code>), with
+<code>k = 10</code> predictor-domain cubic-regression splines,
+<code>spline_df = 10</code> response-domain B-splines, FPCA residual
+structure estimated via <code><a href="https://rdrr.io/pkg/refund/man/fpca.sc.html" class="external-link">refund::fpca.sc()</a></code>, 1 chain, 1000
+iterations (500 warm-up).</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="performance-metric">Performance Metric<a class="anchor" aria-label="anchor" href="#performance-metric"></a>
+</h3>
+<p>For each replicate we draw an independent validation set of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mtext mathvariant="normal">valid</mtext></msub><mo>=</mo><mn>5000</mn></mrow><annotation encoding="application/x-tex">n_{\text{valid}} = 5000</annotation></semantics></math>
+subjects from the same data-generating process, evaluate each method’s
+predicted mean response
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mover><mi>μ</mi><mo accent="true">̂</mo></mover><mi>i</mi><mtext mathvariant="normal">val</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\widehat{\mu}_i^{\text{val}}(t)</annotation></semantics></math>,
+and compute the <strong>relative prediction MSE</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext mathvariant="normal">relMSE</mtext><mtext mathvariant="normal">pred</mtext></msup><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><mfrac><mrow><mfrac><mn>1</mn><mrow><msub><mi>n</mi><mtext mathvariant="normal">valid</mtext></msub><mi>M</mi></mrow></mfrac><mspace width="0.167em"></mspace><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>m</mi></mrow></munder><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">{</mo><msubsup><mover><mi>μ</mi><mo accent="true">̂</mo></mover><mi>i</mi><mtext mathvariant="normal">val</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msubsup><mi>μ</mi><mi>i</mi><mtext mathvariant="normal">val</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><msup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">}</mo><mn>2</mn></msup></mrow><mrow><mfrac><mn>1</mn><mrow><msub><mi>n</mi><mtext mathvariant="normal">valid</mtext></msub><mi>M</mi></mrow></mfrac><mspace width="0.167em"></mspace><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>m</mi></mrow></munder><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">{</mo><msubsup><mi>μ</mi><mi>i</mi><mtext mathvariant="normal">val</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><msup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">}</mo><mn>2</mn></msup></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{relMSE}^{\text{pred}} \;=\; \frac{\frac{1}{n_{\text{valid}} M}\,\sum_{i,m}\bigl\{\widehat{\mu}_i^{\text{val}}(t_m) - \mu_i^{\text{val}}(t_m)\bigr\}^2}{\frac{1}{n_{\text{valid}} M}\,\sum_{i,m}\bigl\{\mu_i^{\text{val}}(t_m)\bigr\}^2}.
+</annotation></semantics></math></p>
+<p>This metric is invariant to the unidentifiable
+additive-in-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+component of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta(s, t)</annotation></semantics></math>
+(see the package’s <code>Simulation/FoFR_identifiability_note.md</code>
+for details), so it provides an apples-to-apples comparison even though
+<code>pffr()</code> includes an explicit functional intercept and
+<code><a href="../reference/fofr_bayes.html">fofr_bayes()</a></code> does not.</p>
+</div>
+<div class="section level3">
+<h3 id="results">Results<a class="anchor" aria-label="anchor" href="#results"></a>
+</h3>
+<div class="float">
+<img src="figures/fofr_sim_pred_relMSE.png" style="width:100.0%" alt="FoFR predictive accuracy"><div class="figcaption">FoFR predictive accuracy</div>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

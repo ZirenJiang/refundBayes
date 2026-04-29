@@ -30,6 +30,13 @@ Survival model with functional predictors and right-censored outcomes.
 - [`fcox_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fcox_bayes.md)
   : Bayesian Functional Cox Regression
 
+## Functional Principal Component Analysis
+
+Bayesian FPCA decomposition of a functional outcome.
+
+- [`fpca_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fpca_bayes.md)
+  : Bayesian Functional Principal Component Analysis
+
 ## Post-fitting
 
 Methods for summarising and plotting fitted models.

@@ -7,18 +7,40 @@
 \method{plot}{refundBayes}(x = NULL, ..., prob = 0.95, include = "both")
 }
 \arguments{
-\item{x}{A fitted object returned by \code{sofr_bayes()}.}
+\item{x}{A fitted object returned by \code{sofr_bayes()},
+\code{fosr_bayes()}, \code{fofr_bayes()}, \code{fcox_bayes()}, or
+\code{fpca_bayes()}.}
 
 \item{...}{Other parameters}
 
 \item{prob}{Coverage probability for the credible interval(s). Defaults to 0.95.}
 
 \item{include}{Type of interval to include. \code{"pointwise"} produces pointwise credible intervals;
-\code{"CMA"} produces the CMA credible band; \code{"both"} produces both. Defaults to \code{"both"}.}
+\code{"CMA"} produces the CMA credible band; \code{"both"} produces both. Defaults to \code{"both"}.
+Only used for \code{sofr_bayes()} / \code{fcox_bayes()} curve plots.}
 }
 \value{
-A list of \code{ggplot} objects, one for each functional coefficient.
+A named list of \code{ggplot} objects. For FoFR, scalar-predictor
+  curves are named \code{scalar_<p>} and bivariate-predictor heatmaps are
+  named \code{bivar_<q>}. For FPCA, the plots are named \code{mu},
+  \code{efunctions}, \code{evalues}, and \code{sigma}.
 }
 \description{
-Plot the estimated functional coefficients with the corresponding credible interval(s).
+Produces coefficient plots tailored to the model family:
+\itemize{
+  \item \code{sofr_bayes()}, \code{fcox_bayes()}: one curve plot per
+    functional predictor coefficient \eqn{\beta(s)}, with pointwise and/or
+    CMA credible bands.
+  \item \code{fosr_bayes()}: one curve plot per scalar predictor
+    coefficient function \eqn{\alpha_p(t)}.
+  \item \code{fofr_bayes()}: curve plots for scalar predictor coefficient
+    functions \eqn{\alpha_p(t)} (if any), followed by heatmap plots for
+    each bivariate coefficient surface \eqn{\beta_q(s, t)} (posterior
+    mean) from the functional predictors.
+  \item \code{fpca_bayes()}: posterior mean function \eqn{\mu(t)} with a
+    pointwise credible band; a combined plot of the (fixed) FPC
+    eigenfunctions \eqn{\phi_j(t)}; a point-and-error-bar plot of the
+    posterior of the eigenvalue SDs \eqn{\lambda_j}; and a histogram of the
+    residual-SD posterior \eqn{\sigma_\epsilon}.
+}
 }

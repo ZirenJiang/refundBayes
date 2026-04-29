@@ -17,9 +17,76 @@ extract_basis = function(formula, data, func_comp){ ## currently only support "c
     # if(sp_type == "cc"){
     #   sp_basis[[i]] <- extract_basis_cc(formula$func_var[[i]], data)
     # }
-    sp_basis[[i]] <- extract_basis_all(formula$func_var[[i]], data)
+    if(isTRUE(func_comp[i])){
+      sp_basis[[i]] <- extract_basis_fpca(formula$func_var[[i]], data)
+    }else{
+      sp_basis[[i]] <- extract_basis_all(formula$func_var[[i]], data)
+    }
   }
   return(sp_basis)
+}
+
+#----------------------------------------------------------------------------
+#' Extract the basis info needed to reconstruct the functional coefficient
+#' \eqn{\beta(s)} when the functional predictor is jointly modelled with
+#' FPCA (i.e. when \code{func_comp[i] == TRUE}).
+#'
+#' Mirrors the logic of \code{ext_func_pred_fpca()} (in refundBayesdata.R) so
+#' that the same \code{Psi_mat}, eigendecomposition, and \code{E} scaling are
+#' used for posterior reconstruction. The Stan parameters \code{br_i} and
+#' \code{bf_i} are already in the (eigendecomp, E)-transformed space, so the
+#' reconstruction is:
+#'   1. spline coef = (eigendecomp$vectors %*% diag(1 / E)) %*% c(br_i, bf_i)
+#'   2. beta(s)     = base_mat %*% spline coef
+#'
+#' @keywords internal
+#' @noRd
+#'
+extract_basis_fpca = function(term, data){
+  knots <- NULL
+  obj <- 1
+  eval(parse(text = paste0("obj = ", format(term))))
+  dk <- ExtractData(obj, data, knots)
+  splinecons <- mgcv::smooth.construct(obj, dk$data, dk$knots)
+  Psi_mat <- splinecons$X
+  S_mat <- splinecons$S[[1]]
+  rank <- splinecons$rank
+  K_num <- ncol(Psi_mat)
+
+  ## Scale the penalty matrix to match ext_func_pred_fpca()
+  maXX <- norm(Psi_mat, type = "I") ^ 2
+  maS <- norm(S_mat) / maXX
+  S_mat_scaled <- S_mat / maS
+  eigendecomp <- eigen(S_mat_scaled, symmetric = TRUE)
+
+  ## Recompute X_mat_t to derive the same E that was used at data-prep time.
+  parsed <- parse_by_func(term, data)
+  funcmat <- parsed$funcmat
+  lmat <- parsed$lmat
+  fpca_fit <- refund::fpca.sc(Y = unclass(funcmat))
+  Phi <- fpca_fit$efunctions
+  if(is.null(dim(Phi))){
+    Phi <- matrix(Phi, ncol = 1)
+  }
+  l_vec <- as.numeric(lmat[1, ])
+  X_mat_t <- t(Phi) %*% (l_vec * Psi_mat)
+
+  E <- rep(1, K_num)
+  E[1:rank] <- sqrt(eigendecomp$value[1:rank])
+  X_mat_t <- X_mat_t %*% eigendecomp$vectors
+  if(rank < K_num){
+    col.norm <- colSums(X_mat_t ^ 2)
+    col.norm <- col.norm / E ^ 2
+    av.norm <- mean(col.norm[1:rank])
+    for (kk in (rank + 1):K_num) {
+      E[kk] <- sqrt(col.norm[kk] / av.norm)
+    }
+  }
+
+  return(list(E = E,
+              eigendecomp = eigendecomp,
+              base_mat = Psi_mat,
+              joint_FPCA = TRUE))
 }
 
 #----------------------------------------------------------------------------

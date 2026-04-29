@@ -10,7 +10,7 @@
 #' @param formula Functional regression formula, with the same syntax as that in the R mgcv package.
 #' @param data A data frame containing data of all scalar and functional variables used in the model.
 #' @param cens A vector indicating censoring status (1 = event observed, 0 = censored). Must be the same length as the number of observations.
-#' @param joint_FPCA A True/False vector of the same length of the number of functional predictors, indicating whether jointly modeling FPCA for the functional predictors. Default to NULL.
+#' @param joint_FPCA A True/False vector of the same length of the number of functional predictors, indicating whether to jointly model the functional predictor via FPCA together with the survival model. When the entry is \code{TRUE}, the corresponding observed functional predictor is replaced by an FPCA representation, and the FPC scores are sampled jointly with the regression coefficients, following Section 4 of Jiang et al. (2025). Default to \code{NULL} (no joint FPCA, equivalent to \code{rep(FALSE, n_func)}).
 #' @param intercept True/False variable for whether include an intercept term in the linear predictor. Default to FALSE.
 #' @param runStan True/False variable for whether to run the Stan program. If False, the function only generates the Stan code and data.
 #' @param niter Total number of Bayesian iterations. Default to 3000.
@@ -75,7 +75,6 @@
 #' @import mgcv
 #' @import splines2
 #' @import rstan
-#' @importFrom brms brmsformula
 #' @importFrom refund fpca.face
 #' @export fcox_bayes
 

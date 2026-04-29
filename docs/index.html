@@ -40,9 +40,11 @@
 <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="articles/sofr_bayes_vignette.html">Bayesian Scalar-on-Function Regression with `refundBayes::sofr_bayes`</a></li>
-    <li><a class="dropdown-item" href="articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression with `refundBayes::fosr_bayes`</a></li>
-    <li><a class="dropdown-item" href="articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression with `refundBayes::fofr_bayes`</a></li>
-    <li><a class="dropdown-item" href="articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression with `refundBayes::fcox_bayes`</a></li>
+    <li><a class="dropdown-item" href="articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression</a></li>
+    <li><a class="dropdown-item" href="articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression</a></li>
+    <li><a class="dropdown-item" href="articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression</a></li>
+    <li><a class="dropdown-item" href="articles/fpca_bayes_vignette.html">Bayesian Functional Principal Component Analysis</a></li>
+    <li><a class="dropdown-item" href="articles/joint_FPCA_vignette.html">Joint FPCA Modeling in refundBayes</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -59,8 +61,7 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><hr>
-<div class="section level1">
+  <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="package-refundbayes">Package: <a href="https://zirenjiang.github.io/refundBayes/">refundBayes</a>
 <a class="anchor" aria-label="anchor" href="#package-refundbayes"></a>
 </h1></div>
@@ -74,10 +75,10 @@
 </h2>
 <table class="table">
 <colgroup>
-<col width="31%">
-<col width="22%">
-<col width="22%">
-<col width="22%">
+<col width="34%">
+<col width="21%">
+<col width="21%">
+<col width="21%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Model</th>
@@ -116,29 +117,49 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install the development version from GitHub:</p>
+<p>The <code>refundBayes</code> package can be installed from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"refundBayes"</span><span class="op">)</span></span></code></pre></div>
+<p>For the latest version of the <code>refundBayes</code> package, users can install from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ZirenJiang/refundBayes"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>The example below fits a Bayesian Scalar-on-Function Regression (SoFR) model on the bundled <code>example_data_sofr</code> dataset, which contains a scalar outcome <code>y</code>, a scalar predictor <code>X1</code>, and one functional predictor stored in three matched <code>n x M</code> matrices: <code>tmat</code> (observation times), <code>lmat</code> (Riemann-sum integration weights <code>L_m = t_{m+1} - t_m</code>), and <code>wmat</code> (functional predictor values <code>W_i(t_m)</code>).</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zirenjiang.github.io/refundBayes/">refundBayes</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Load the bundled example dataset (see ?example_data_sofr for variable details)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">example_data_sofr</span><span class="op">)</span></span>
-<span><span class="co"># Bayesian Scalar-on-Function Regression</span></span>
+<span></span>
+<span><span class="co">## Fit a Bayesian Scalar-on-Function Regression model.</span></span>
+<span><span class="co">## Formula syntax mirrors mgcv::gam:</span></span>
+<span><span class="co">##   - X1                              : scalar covariate (linear effect)</span></span>
+<span><span class="co">##   - s(tmat, by = lmat * wmat, ...)  : functional term encoding the integral</span></span>
+<span><span class="co">##                                       int_T W_i(t) * beta(t) dt as a Riemann</span></span>
+<span><span class="co">##                                       sum over the time grid in `tmat`,</span></span>
+<span><span class="co">##                                       weighted by `lmat * wmat`</span></span>
+<span><span class="co">##   - bs = "cr"                       : cubic regression spline basis for beta(t)</span></span>
+<span><span class="co">##                                       (use "cc" for periodic predictors, e.g.</span></span>
+<span><span class="co">##                                       24-hour activity profiles)</span></span>
+<span><span class="co">##   - k  = 10                         : number of spline basis functions</span></span>
+<span><span class="co">##                                       (30-40 is recommended in practice)</span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sofr_bayes.html">sofr_bayes</a></span><span class="op">(</span></span>
 <span>  <span class="va">y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="fu">s</span><span class="op">(</span><span class="va">tmat</span>, by <span class="op">=</span> <span class="va">lmat</span> <span class="op">*</span> <span class="va">wmat</span>, bs <span class="op">=</span> <span class="st">"cr"</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
 <span>  data    <span class="op">=</span> <span class="va">example_data_sofr</span>,</span>
-<span>  family  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">gaussian</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  niter   <span class="op">=</span> <span class="fl">2000</span>,</span>
-<span>  nwarmup <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  nchain  <span class="op">=</span> <span class="fl">1</span></span>
+<span>  family  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">gaussian</a></span><span class="op">(</span><span class="op">)</span>,  <span class="co"># outcome distribution; binomial() is also supported</span></span>
+<span>  niter   <span class="op">=</span> <span class="fl">2000</span>,        <span class="co"># total HMC iterations per chain (warmup + sampling)</span></span>
+<span>  nwarmup <span class="op">=</span> <span class="fl">1000</span>,        <span class="co"># warmup (burn-in) iterations, discarded for inference</span></span>
+<span>  nchain  <span class="op">=</span> <span class="fl">1</span>            <span class="co"># number of chains; use &gt;= 3 in practice for diagnostics</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">## `fit` is an object of class "refundBayes" containing posterior samples for</span></span>
+<span><span class="co">## the intercept, scalar coefficient(s), and the functional coefficient beta(t).</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>   <span class="co"># posterior summaries (mean, SD, 95% CrI) for all parameters</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>      <span class="co"># estimated beta(t) with pointwise 95% credible band</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="tutorials">Tutorials<a class="anchor" aria-label="anchor" href="#tutorials"></a>
@@ -158,16 +179,16 @@
 <blockquote>
 <p>Jiang, Z., Crainiceanu, C., and Cui, E. (2025). Tutorial on Bayesian Functional Regression Using Stan. <em>Statistics in Medicine</em>, 44(20–22), e70265. <a href="https://doi.org/10.1002/sim.70265" class="external-link uri">https://doi.org/10.1002/sim.70265</a></p>
 </blockquote>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="va">@article</span>{<span class="ot">jiang2025tutorial</span>,</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="dt">title</span>   = {Tutorial on {B}ayesian Functional Regression Using {S}tan},</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="dt">author</span>  = {Jiang, Ziren and Crainiceanu, Ciprian and Cui, Erjia},</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="dt">journal</span> = {Statistics in Medicine},</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="dt">volume</span>  = {44},</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="dt">number</span>  = {20--22},</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="dt">pages</span>   = {e70265},</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="dt">year</span>    = {2025},</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="dt">doi</span>     = {10.1002/sim.70265}</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="va">@article</span>{<span class="ot">jiang2025tutorial</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="dt">title</span>   = {Tutorial on {B}ayesian Functional Regression Using {S}tan},</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="dt">author</span>  = {Jiang, Ziren and Crainiceanu, Ciprian and Cui, Erjia},</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="dt">journal</span> = {Statistics in Medicine},</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="dt">volume</span>  = {44},</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="dt">number</span>  = {20--22},</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="dt">pages</span>   = {e70265},</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="dt">year</span>    = {2025},</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="dt">doi</span>     = {10.1002/sim.70265}</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="related-packages">Related Packages<a class="anchor" aria-label="anchor" href="#related-packages"></a>
@@ -194,7 +215,6 @@
 </ul>
 </div>
 </div>
-
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">

@@ -11,8 +11,8 @@ refundBayesmodel = function(formula, data, family, func_comp, intercept){
   result_code_model <- paste0("model{ \n")
   result_code_model <- paste0(result_code_model, "   vector[N_num] mu = rep_vector(0.0, N_num);\n")
   result_code_model <- paste0(result_code_model, "   //Linear predictor\n")
-  result_code_model <- paste0(result_code_model, "   mu += ") 
-  
+  result_code_model <- paste0(result_code_model, "   mu += ")
+
   if(intercept){ ## add intercept
     result_code_model <- paste0(result_code_model, "eta_0 ")
   }
@@ -20,11 +20,19 @@ refundBayesmodel = function(formula, data, family, func_comp, intercept){
     result_code_model <- paste0(result_code_model, "+ X_sc * gamma")
   }
   if(is.null(func_comp)){ ## Do not have any functional predictor
-    
+
   }else{
     for(i in 1:length(func_comp)){
       if(func_comp[i]){
-        
+        ## Joint FPCA: with X_mat_r_i (Kr x J_num) and X_mat_f_i (Kf x J_num),
+        ## the contribution to the linear predictor for subject n is
+        ##   sum_j xi_{n,j} * (X_mat_r_i' * br_i + X_mat_f_i' * bf_i)_j
+        ## which in matrix form is xi_i * (X_mat_r_i' * br_i + X_mat_f_i' * bf_i).
+        result_code_model <- paste0(result_code_model,
+                                    "+ ", paste0("xi_", i), " * (",
+                                    paste0("X_mat_r_", i), "' * ", paste0("br_", i),
+                                    " + ", paste0("X_mat_f_", i), "' * ", paste0("bf_", i),
+                                    ")")
       }
       if(!func_comp[i]){ ## add functional predictors
         result_code_model <- paste0(result_code_model, "+ ",paste0("X_mat_r_",i)," * ",paste0("br_",i),"+ ",paste0("X_mat_f_",i)," * ",paste0("bf_",i))
@@ -113,11 +121,36 @@ set_prior = function(formula, data, family, func_comp, intercept){
     }
   }
   if(is.null(func_comp)){ ## Do not have any functional predictor
-    
+
   }else{
     for(i in 1:length(func_comp)){
       if(func_comp[i]){
-        
+        ## Joint FPCA likelihood and priors: this introduces a working FPCA
+        ## sub-model for the functional predictor and shrinks the FPC scores
+        ## toward the initial fpca.sc estimates xi_hat_i (Tutorial Section 4).
+        result_code_model <- paste0(result_code_model,
+                                    "   //Joint FPCA likelihood for functional predictor ", i, "\n")
+        result_code_model <- paste0(result_code_model,
+                                    "   target += -N_num * ", paste0("M_num_", i), " * log(", paste0("sigma_e_", i), ")",
+                                    " - sum((", paste0("xi_", i), " * ", paste0("Phi_mat_", i), " - ", paste0("M_mat_", i), ")^2) / (2 * ", paste0("sigma_e_", i), "^2);\n")
+        result_code_model <- paste0(result_code_model,
+                                    "   //Prior for the joint FPCA scores for functional predictor ", i, "\n")
+        result_code_model <- paste0(result_code_model,
+                                    "   for (nj in 1:", paste0("J_num_", i), ") {\n")
+        result_code_model <- paste0(result_code_model,
+                                    "     target += -N_num * log(", paste0("lambda_", i), "[nj]) - sum((",
+                                    paste0("xi_", i), "[, nj] - ", paste0("xi_hat_", i), "[, nj])^2) / (2 * ",
+                                    paste0("lambda_", i), "[nj]^2);\n")
+        result_code_model <- paste0(result_code_model,
+                                    "     target += inv_gamma_lpdf(", paste0("lambda_", i), "[nj]^2 | 0.001, 0.001);\n")
+        result_code_model <- paste0(result_code_model, "   }\n")
+        result_code_model <- paste0(result_code_model,
+                                    "   target += inv_gamma_lpdf(", paste0("sigma_e_", i), "^2 | 0.001, 0.001);\n")
+        ## Random/fixed effect priors for the functional regression coefficient
+        result_code_model <- paste0(result_code_model,
+                                    "   target += std_normal_lpdf(", paste0("zbr_", i), ");\n")
+        result_code_model <- paste0(result_code_model,
+                                    "   target += inv_gamma_lpdf(", paste0("sigmabr_", i), "^2 | 0.0005, 0.0005);\n")
       }
       if(!func_comp[i]){ ## priors for the random effect coefficients zbr and sigmabr
         result_code_model <- paste0(result_code_model,"   target += std_normal_lpdf(", paste0("zbr_",i),");\n")

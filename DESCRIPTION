@@ -2,7 +2,7 @@ Package: refundBayes
 Encoding: UTF-8
 Type: Package
 Title: Bayesian Regression with Functional Data
-Version: 0.5.1
+Version: 0.6.0
 Authors@R:
    c(person("Ziren", "Jiang", email = "jian0746@umn.edu",
              role = c("aut", "cre")),
@@ -11,8 +11,6 @@ Authors@R:
 Depends:
     R (>= 3.6.0)
 Imports:
-    brms,
-    dplyr,
     ggplot2 (>= 2.0.0),
     mgcv,
     refund,

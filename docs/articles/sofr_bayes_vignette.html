@@ -36,9 +36,11 @@
 <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/sofr_bayes_vignette.html">Bayesian Scalar-on-Function Regression with `refundBayes::sofr_bayes`</a></li>
-    <li><a class="dropdown-item" href="../articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression with `refundBayes::fosr_bayes`</a></li>
-    <li><a class="dropdown-item" href="../articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression with `refundBayes::fofr_bayes`</a></li>
-    <li><a class="dropdown-item" href="../articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression with `refundBayes::fcox_bayes`</a></li>
+    <li><a class="dropdown-item" href="../articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/fpca_bayes_vignette.html">Bayesian Functional Principal Component Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/joint_FPCA_vignette.html">Joint FPCA Modeling in refundBayes</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -88,9 +90,12 @@ published in <em>Statistics in Medicine</em>.</p>
 <div class="section level2">
 <h2 id="install-the-refundbayes-package">Install the <code>refundBayes</code> Package<a class="anchor" aria-label="anchor" href="#install-the-refundbayes-package"></a>
 </h2>
-<p>The <code>refundBayes</code> package can be installed from
-GitHub:</p>
+<p>The <code>refundBayes</code> package can be installed from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"refundBayes"</span><span class="op">)</span></span></code></pre></div>
+<p>For the latest version of the <code>refundBayes</code> package, users
+can install from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"https://github.com/ZirenJiang/refundBayes"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -311,6 +316,31 @@ smoothing variance
 is assigned an inverse-Gamma prior
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mi>G</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.001</mn><mo>,</mo><mn>0.001</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">IG(0.001, 0.001)</annotation></semantics></math>.</p>
 </div>
+<div class="section level3">
+<h3 id="optional-joint-fpca-modeling">Optional: Joint FPCA Modeling<a class="anchor" aria-label="anchor" href="#optional-joint-fpca-modeling"></a>
+</h3>
+<p>When the observed functional predictor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W_i(s)</annotation></semantics></math>
+contains substantial measurement noise, plugging it directly into the
+integral
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∫</mo><msub><mi>W</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>β</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">\int W_i(s)\beta(s)\,ds</annotation></semantics></math>
+ignores the predictor uncertainty and tends to attenuate the estimated
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta(\cdot)</annotation></semantics></math>
+toward zero (errors-in-variables bias) and to underestimate the
+credible-band width. The <code>joint_FPCA</code> argument of
+<code><a href="../reference/sofr_bayes.html">sofr_bayes()</a></code> activates an alternative model in which
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W_i(s)</annotation></semantics></math>
+is replaced by an FPCA representation and the subject-specific FPC
+scores are sampled <strong>jointly</strong> with the regression
+coefficients, so the FPCA uncertainty is propagated into the posterior
+of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta(\cdot)</annotation></semantics></math>.</p>
+<p>The joint FPCA option works for SoFR with both Gaussian and binomial
+outcomes, and the same argument is also available in
+<code><a href="../reference/fcox_bayes.html">fcox_bayes()</a></code> and <code><a href="../reference/fofr_bayes.html">fofr_bayes()</a></code>. The full model
+specification, the Stan code that is generated, and worked examples are
+described in the dedicated <strong><a href="joint_FPCA_vignette.html">Joint FPCA vignette</a></strong>.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="the-sofr_bayes-function">The <code>sofr_bayes()</code> Function<a class="anchor" aria-label="anchor" href="#the-sofr_bayes-function"></a>
@@ -318,7 +348,7 @@ is assigned an inverse-Gamma prior
 <div class="section level3">
 <h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sofr_bayes.html">sofr_bayes</a></span><span class="op">(</span></span>
 <span>  <span class="va">formula</span>,</span>
 <span>  <span class="va">data</span>,</span>
@@ -367,9 +397,12 @@ supports <code><a href="https://rdrr.io/r/stats/family.html" class="external-lin
 <td align="left"><code>joint_FPCA</code></td>
 <td align="left">A logical (<code>TRUE</code>/<code>FALSE</code>) vector
 of the same length as the number of functional predictors, indicating
-whether to jointly model FPCA for each functional predictor. Default is
-<code>NULL</code>, which sets all entries to <code>FALSE</code> (no
-joint FPCA).</td>
+whether to jointly model FPCA for each functional predictor. When
+<code>TRUE</code>, the observed functional predictor is replaced by an
+FPCA representation and its FPC scores are sampled jointly with the
+regression coefficients (errors-in-variables-aware fit). See the <a href="joint_FPCA_vignette.html">Joint FPCA vignette</a> for the model
+specification and worked examples. Default is <code>NULL</code>, which
+sets all entries to <code>FALSE</code> (no joint FPCA).</td>
 </tr>
 <tr class="odd">
 <td align="left"><code>intercept</code></td>
@@ -476,7 +509,7 @@ domain.</td>
 </h3>
 <p>The formula follows the <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">mgcv::gam</a></code> syntax. The key
 component for specifying functional predictors is:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">tmat</span>, by <span class="op">=</span> <span class="va">lmat</span> <span class="op">*</span> <span class="va">wmat</span>, bs <span class="op">=</span> <span class="st">"cc"</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p>where:</p>
 <ul>
@@ -544,7 +577,7 @@ predictor.</p>
 <div class="section level3">
 <h3 id="load-data">Load Data<a class="anchor" aria-label="anchor" href="#load-data"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Alternative sample data </span></span>
 <span></span>
 <span><span class="co"># data.SoFR &lt;- readRDS("data/example_data_sofr.rds")</span></span>
@@ -592,7 +625,7 @@ functional predictor matrix.</li>
 <div class="section level3">
 <h3 id="fit-the-bayesian-sofr-model">Fit the Bayesian SoFR Model<a class="anchor" aria-label="anchor" href="#fit-the-bayesian-sofr-model"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zirenjiang.github.io/refundBayes/">refundBayes</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">refundBayes_SoFR</span> <span class="op">&lt;-</span> <span class="fu">refundBayes</span><span class="fu">::</span><span class="fu"><a href="../reference/sofr_bayes.html">sofr_bayes</a></span><span class="op">(</span></span>
@@ -637,7 +670,7 @@ iterations (500 warmup + 1000 posterior samples).</li>
 displays the estimated functional coefficient
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>β</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat{\beta}(t)</annotation></semantics></math>
 along with pointwise 95% credible intervals:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">refundBayes_SoFR</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -646,7 +679,7 @@ along with pointwise 95% credible intervals:</p>
 </h3>
 <p>Posterior summaries of the functional coefficient can be computed
 directly from the <code>func_coef</code> element:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Posterior mean of the functional coefficient</span></span>
 <span><span class="va">mean_curve</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">refundBayes_SoFR</span><span class="op">$</span><span class="va">func_coef</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fl">2</span>, <span class="va">mean</span><span class="op">)</span></span>
 <span></span>
@@ -668,7 +701,7 @@ is the number of time points on the functional domain.</p>
 </h3>
 <p>The Bayesian results can be compared with frequentist estimates
 obtained via <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">mgcv::gam</a></code>:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">mgcv</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Fit frequentist SoFR using mgcv</span></span>
@@ -690,7 +723,7 @@ accounting for uncertainty in the smoothing parameter.</p>
 </h3>
 <p>Setting <code>runStan = FALSE</code> allows you to inspect or modify
 the Stan code before running the model:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Generate Stan code without running the sampler</span></span>
 <span><span class="va">sofr_code</span> <span class="op">&lt;-</span> <span class="fu">refundBayes</span><span class="fu">::</span><span class="fu"><a href="../reference/sofr_bayes.html">sofr_bayes</a></span><span class="op">(</span></span>
 <span>  <span class="va">y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">tmat</span>, by <span class="op">=</span> <span class="va">lmat</span> <span class="op">*</span> <span class="va">wmat</span>, bs <span class="op">=</span> <span class="st">"cc"</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
@@ -734,7 +767,8 @@ the Markov chains have converged.</li>
 <strong>Joint FPCA</strong>: When functional predictors are measured
 with substantial noise, consider setting <code>joint_FPCA = TRUE</code>
 for the relevant predictor to jointly estimate FPCA scores and
-regression coefficients.</li>
+regression coefficients. See the <a href="joint_FPCA_vignette.html">Joint FPCA vignette</a> for
+details.</li>
 </ul>
 </div>
 <div class="section level2">

@@ -1,4 +1,4 @@
-# Bayesian Function-on-Scalar Regression with \`refundBayes::fosr_bayes\`
+# Bayesian Function-on-Scalar Regression
 
 ## Introduction
 
@@ -19,7 +19,14 @@ Zipunnikov, and Schrack (2015).
 
 ## Install the `refundBayes` Package
 
-The `refundBayes` package can be installed from GitHub:
+The `refundBayes` package can be installed from CRAN:
+
+``` r
+install.packages("refundBayes")
+```
+
+For the latest version of the `refundBayes` package, users can install
+from GitHub:
 
 ``` r
 library(remotes)

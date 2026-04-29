@@ -21,9 +21,11 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/sofr_bayes_vignette.html">Bayesian Scalar-on-Function Regression with `refundBayes::sofr_bayes`</a></li>
-    <li><a class="dropdown-item" href="../articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression with `refundBayes::fosr_bayes`</a></li>
-    <li><a class="dropdown-item" href="../articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression with `refundBayes::fofr_bayes`</a></li>
-    <li><a class="dropdown-item" href="../articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression with `refundBayes::fcox_bayes`</a></li>
+    <li><a class="dropdown-item" href="../articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/fpca_bayes_vignette.html">Bayesian Functional Principal Component Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/joint_FPCA_vignette.html">Joint FPCA Modeling in refundBayes</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -79,7 +81,7 @@
 
 
 <dt id="arg-joint-fpca">joint_FPCA<a class="anchor" aria-label="anchor" href="#arg-joint-fpca"></a></dt>
-<dd><p>A True/False vector of the same length of the number of functional predictors, indicating whether jointly modeling FPCA for the functional predictors. Default to NULL.</p></dd>
+<dd><p>A True/False vector of the same length of the number of functional predictors, indicating whether to jointly model the functional predictor via FPCA together with the survival model. When the entry is <code>TRUE</code>, the corresponding observed functional predictor is replaced by an FPCA representation, and the FPC scores are sampled jointly with the regression coefficients, following Section 4 of Jiang et al. (2025). Default to <code>NULL</code> (no joint FPCA, equivalent to <code>rep(FALSE, n_func)</code>).</p></dd>
 
 
 <dt id="arg-intercept">intercept<a class="anchor" aria-label="anchor" href="#arg-intercept"></a></dt>

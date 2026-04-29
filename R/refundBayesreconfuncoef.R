@@ -14,7 +14,13 @@ recon_fun_coef = function(basis, fit.samp, func_comp, trans.mat){
     base_mat <- basis[[inx]][["base_mat"]]
     E <- basis[[inx]][["E"]]
     para <- cbind(fit.samp[[paste0("br_", inx)]], fit.samp[[paste0("bf_", inx)]])
-    para.trans <- para %*% trans.mat[[inx]]
+    if(isTRUE(func_comp[inx])){
+      ## Joint FPCA: br_inx and bf_inx are already in the
+      ## (eigendecomp, E)-reparameterized space, so no trans.U is applied.
+      para.trans <- para
+    }else{
+      para.trans <- para %*% trans.mat[[inx]]
+    }
     para.trans.untilde <- para.trans
     for(i in 1:nrow(para.trans)){
       para.trans.untilde[i,] <- (eigendecomp$vectors %*% diag(1/E)) %*% matrix(para.trans[i,], ncol=1)

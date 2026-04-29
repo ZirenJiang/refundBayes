@@ -1,7 +1,5 @@
 # Package: [refundBayes](https://zirenjiang.github.io/refundBayes/)
 
-------------------------------------------------------------------------
-
 **refundBayes** provides a convenient interface for Bayesian functional
 regression using [Stan](https://mc-stan.org/). The package supports
 models with scalar, functional, or survival outcomes and allows both
@@ -23,7 +21,14 @@ providing full Bayesian posterior inference.
 
 ## Installation
 
-Install the development version from GitHub:
+The `refundBayes` package can be installed from CRAN:
+
+``` r
+install.packages("refundBayes")
+```
+
+For the latest version of the `refundBayes` package, users can install
+from GitHub:
 
 ``` r
 # install.packages("remotes")
@@ -32,21 +37,44 @@ remotes::install_github("ZirenJiang/refundBayes")
 
 ## Quick Start
 
+The example below fits a Bayesian Scalar-on-Function Regression (SoFR)
+model on the bundled `example_data_sofr` dataset, which contains a
+scalar outcome `y`, a scalar predictor `X1`, and one functional
+predictor stored in three matched `n x M` matrices: `tmat` (observation
+times), `lmat` (Riemann-sum integration weights `L_m = t_{m+1} - t_m`),
+and `wmat` (functional predictor values `W_i(t_m)`).
+
 ``` r
 library(refundBayes)
+
+## Load the bundled example dataset (see ?example_data_sofr for variable details)
 data(example_data_sofr)
-# Bayesian Scalar-on-Function Regression
+
+## Fit a Bayesian Scalar-on-Function Regression model.
+## Formula syntax mirrors mgcv::gam:
+##   - X1                              : scalar covariate (linear effect)
+##   - s(tmat, by = lmat * wmat, ...)  : functional term encoding the integral
+##                                       int_T W_i(t) * beta(t) dt as a Riemann
+##                                       sum over the time grid in `tmat`,
+##                                       weighted by `lmat * wmat`
+##   - bs = "cr"                       : cubic regression spline basis for beta(t)
+##                                       (use "cc" for periodic predictors, e.g.
+##                                       24-hour activity profiles)
+##   - k  = 10                         : number of spline basis functions
+##                                       (30-40 is recommended in practice)
 fit <- sofr_bayes(
   y ~ X1 + s(tmat, by = lmat * wmat, bs = "cr", k = 10),
   data    = example_data_sofr,
-  family  = gaussian(),
-  niter   = 2000,
-  nwarmup = 1000,
-  nchain  = 1
+  family  = gaussian(),  # outcome distribution; binomial() is also supported
+  niter   = 2000,        # total HMC iterations per chain (warmup + sampling)
+  nwarmup = 1000,        # warmup (burn-in) iterations, discarded for inference
+  nchain  = 1            # number of chains; use >= 3 in practice for diagnostics
 )
 
-summary(fit)
-plot(fit)
+## `fit` is an object of class "refundBayes" containing posterior samples for
+## the intercept, scalar coefficient(s), and the functional coefficient beta(t).
+summary(fit)   # posterior summaries (mean, SD, 95% CrI) for all parameters
+plot(fit)      # estimated beta(t) with pointwise 95% credible band
 ```
 
 ## Tutorials

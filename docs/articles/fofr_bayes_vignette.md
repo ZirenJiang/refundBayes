@@ -1,4 +1,4 @@
-# Bayesian Function-on-Function Regression with \`refundBayes::fofr_bayes\`
+# Bayesian Function-on-Function Regression
 
 ## Introduction
 
@@ -25,7 +25,14 @@ published in *Statistics in Medicine*.
 
 ## Install the `refundBayes` Package
 
-The `refundBayes` package can be installed from GitHub:
+The `refundBayes` package can be installed from CRAN:
+
+``` r
+install.packages("refundBayes")
+```
+
+For the latest version of the `refundBayes` package, users can install
+from GitHub:
 
 ``` r
 library(remotes)
@@ -239,6 +246,31 @@ where the mean function $\mu_{i}\left( t_{m} \right)$ includes
 contributions from scalar predictors, functional predictors, and FPCA
 scores.
 
+### Optional: Joint FPCA Modeling
+
+The default
+[`fofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fofr_bayes.md)
+model treats the observed functional predictor $W_{i}(s)$ as if it were
+observed without error. When the predictor curves are noisy, this
+attenuates the bivariate coefficient $\beta(s,t)$ toward zero
+(errors-in-variables bias) and shrinks the credible-band width. The
+`joint_FPCA` argument activates an alternative model in which $W_{i}(s)$
+is replaced by an FPCA representation and the subject-specific FPC
+scores are sampled **jointly** with the bivariate coefficient,
+propagating the FPCA uncertainty into the posterior of $\beta(s,t)$.
+
+The same `joint_FPCA` argument is available in
+[`sofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/sofr_bayes.md)
+and
+[`fcox_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fcox_bayes.md).
+The full model specification (FPCA likelihood for the predictor,
+FPC-score prior centered on the initial
+[`refund::fpca.sc()`](https://rdrr.io/pkg/refund/man/fpca.sc.html)
+scores, the resulting Stan program with bivariate coefficients in the
+FPC basis, and a worked FoFR example) is presented in the dedicated
+**[Joint FPCA
+vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.md)**.
+
 ### Relationship to SoFR and FoSR
 
 The FoFR model nests both the SoFR and FoSR models as special cases:
@@ -281,18 +313,18 @@ fofr_bayes(
 
 ### Arguments
 
-| Argument      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-|:--------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `formula`     | Functional regression formula, using the same syntax as [`mgcv::gam`](https://rdrr.io/pkg/mgcv/man/gam.html). The left-hand side is the functional response (an $n \times M$ matrix in `data`). The right-hand side includes scalar predictors as standard terms and functional predictors via `s(..., by = ...)` terms. At least one functional predictor must be present; otherwise use [`fosr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fosr_bayes.md). |
-| `data`        | A data frame containing all variables used in the model. The functional response and functional predictor should be stored as $n \times M$ and $n \times L$ matrices, respectively.                                                                                                                                                                                                                                                                                           |
-| `joint_FPCA`  | A logical (`TRUE`/`FALSE`) vector of the same length as the number of functional predictors, indicating whether to jointly model FPCA for each functional predictor. Default is `NULL`, which sets all entries to `FALSE`.                                                                                                                                                                                                                                                    |
-| `runStan`     | Logical. Whether to run the Stan program. If `FALSE`, the function only generates the Stan code and data without sampling. This is useful for inspecting or modifying the generated Stan code. Default is `TRUE`.                                                                                                                                                                                                                                                             |
-| `niter`       | Total number of Bayesian posterior sampling iterations (including warmup). Default is `3000`.                                                                                                                                                                                                                                                                                                                                                                                 |
-| `nwarmup`     | Number of warmup (burn-in) iterations. These samples are discarded and not used for inference. Default is `1000`.                                                                                                                                                                                                                                                                                                                                                             |
-| `nchain`      | Number of Markov chains for posterior sampling. Multiple chains help assess convergence. Default is `3`.                                                                                                                                                                                                                                                                                                                                                                      |
-| `ncores`      | Number of CPU cores to use when executing the chains in parallel. Default is `1`.                                                                                                                                                                                                                                                                                                                                                                                             |
-| `spline_type` | Type of spline basis used for the response-domain component. Default is `"bs"` (B-splines). Other types supported by `mgcv` may also be used.                                                                                                                                                                                                                                                                                                                                 |
-| `spline_df`   | Number of degrees of freedom (basis functions) for the response-domain spline basis. Default is `10`.                                                                                                                                                                                                                                                                                                                                                                         |
+| Argument      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|:--------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `formula`     | Functional regression formula, using the same syntax as [`mgcv::gam`](https://rdrr.io/pkg/mgcv/man/gam.html). The left-hand side is the functional response (an $n \times M$ matrix in `data`). The right-hand side includes scalar predictors as standard terms and functional predictors via `s(..., by = ...)` terms. At least one functional predictor must be present; otherwise use [`fosr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fosr_bayes.md).                                                                                                                         |
+| `data`        | A data frame containing all variables used in the model. The functional response and functional predictor should be stored as $n \times M$ and $n \times L$ matrices, respectively.                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `joint_FPCA`  | A logical (`TRUE`/`FALSE`) vector of the same length as the number of functional predictors, indicating whether to jointly model FPCA for each functional predictor. When `TRUE`, the observed functional predictor is replaced by an FPCA representation and its FPC scores are sampled jointly with the bivariate coefficient (errors-in-variables-aware fit). See the [Joint FPCA vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.md) for the model specification and a worked FoFR example. Default is `NULL`, which sets all entries to `FALSE` (no joint FPCA). |
+| `runStan`     | Logical. Whether to run the Stan program. If `FALSE`, the function only generates the Stan code and data without sampling. This is useful for inspecting or modifying the generated Stan code. Default is `TRUE`.                                                                                                                                                                                                                                                                                                                                                                                     |
+| `niter`       | Total number of Bayesian posterior sampling iterations (including warmup). Default is `3000`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `nwarmup`     | Number of warmup (burn-in) iterations. These samples are discarded and not used for inference. Default is `1000`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `nchain`      | Number of Markov chains for posterior sampling. Multiple chains help assess convergence. Default is `3`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `ncores`      | Number of CPU cores to use when executing the chains in parallel. Default is `1`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `spline_type` | Type of spline basis used for the response-domain component. Default is `"bs"` (B-splines). Other types supported by `mgcv` may also be used.                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `spline_df`   | Number of degrees of freedom (basis functions) for the response-domain spline basis. Default is `10`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ### Return Value
 
@@ -640,6 +672,91 @@ $s$-direction and $t$-direction smoothness priors.
   [`s()`](https://rdrr.io/pkg/mgcv/man/s.html) terms in the formula.
   Each functional predictor receives its own pair of smoothing
   parameters ($\sigma_{s,j}^{2}$, $\sigma_{t,j}^{2}$).
+
+- **Joint FPCA**: When functional predictors are measured with
+  substantial noise, consider setting `joint_FPCA = TRUE` for the
+  relevant predictor to jointly estimate FPCA scores and the bivariate
+  coefficient. See the [Joint FPCA
+  vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.md)
+  for details.
+
+## Simulation Study: Bayesian vs Frequentist FoFR
+
+To benchmark
+[`fofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fofr_bayes.md)
+against the standard frequentist function-on-function regression fit, we
+ran a simulation study comparing posterior-mean prediction against the
+penalised tensor-product estimator implemented in
+[`refund::pffr()`](https://rdrr.io/pkg/refund/man/pffr.html). The full
+simulation script is shipped as `Simulation/FoFR_Simulation_V3.R`, with
+a stand-alone Stan program in `Simulation/StanFoFR_Gaussian.stan`.
+
+### Simulation Setup
+
+Functional observations were generated from a function-on-function model
+**without** scalar predictors:
+
+$$Y_{i}\left( t_{m} \right)\; = \;\frac{1}{L}\sum\limits_{l = 1}^{L}W_{i}\left( s_{l} \right)\,\beta_{\text{true}}\left( s_{l},t_{m} \right)\; + \;\epsilon_{i}\left( t_{m} \right),\qquad\epsilon_{i}\left( t_{m} \right)\overset{\text{iid}}{\sim}N\left( 0,0.5^{2} \right),$$
+
+on uniform grids of size $L = M = 30$ over $\lbrack 0,1\rbrack$.
+Functional predictors $W_{i}(s)$ were generated as four-component
+Fourier expansions with eigenvalues $(2.5,2.5,2.5,2.5)$. Two true
+bivariate-coefficient surfaces and three signal-strength levels were
+considered:
+
+| Factor                            | Levels                                                                                                                                                                                         |
+|:----------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Sample size $n$                   | $100,\; 200,\; 500$                                                                                                                                                                            |
+| $\beta$-surface type              | type 1: separable $\beta_{\text{true}}(s,t) = \tau\, s\, t^{2}$; type 2: Gaussian bump $\beta_{\text{true}}(s,t) = \tau\,\exp\{ - 5\left\lbrack (s - 0.5)^{2} + (t - 0.5)^{2} \right\rbrack\}$ |
+| Signal-strength multiplier $\tau$ | $1,\; 5,\; 10$                                                                                                                                                                                 |
+
+Each cell of the $3 \times 2 \times 3 = 18$ design was replicated
+approximately 500 times, giving roughly 9000 fits per method.
+
+### Comparator Methods
+
+- **Frequentist baseline** –
+  [`refund::pffr()`](https://rdrr.io/pkg/refund/man/pffr.html) with a
+  single
+  `ff(X_func, xind = sgrid, integration = "riemann", splinepars = list(bs = "ps", k = c(10, 10)))`
+  term and the response indexed by `yind = tgrid`. The
+  `integration = "riemann"` option is critical here: the data-generating
+  quadrature is left-Riemann with uniform weight $1/L$, and matching
+  this in `pffr()` (rather than the default Simpson rule) keeps
+  $\widehat{\beta}$ on the same pointwise scale as $\beta_{\text{true}}$
+  during recovery comparisons.
+- **Bayesian model** –
+  [`refundBayes::fofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fofr_bayes.md)
+  (or the equivalent standalone Stan program in
+  `Simulation/StanFoFR_Gaussian.stan`), with `k = 10` predictor-domain
+  cubic-regression splines, `spline_df = 10` response-domain B-splines,
+  FPCA residual structure estimated via
+  [`refund::fpca.sc()`](https://rdrr.io/pkg/refund/man/fpca.sc.html), 1
+  chain, 1000 iterations (500 warm-up).
+
+### Performance Metric
+
+For each replicate we draw an independent validation set of
+$n_{\text{valid}} = 5000$ subjects from the same data-generating
+process, evaluate each method’s predicted mean response
+${\widehat{\mu}}_{i}^{\text{val}}(t)$, and compute the **relative
+prediction MSE**
+
+$$\text{relMSE}^{\text{pred}}\; = \;\frac{\frac{1}{n_{\text{valid}}M}\,\sum\limits_{i,m}\{{\widehat{\mu}}_{i}^{\text{val}}\left( t_{m} \right) - \mu_{i}^{\text{val}}\left( t_{m} \right)\}^{2}}{\frac{1}{n_{\text{valid}}M}\,\sum\limits_{i,m}\{\mu_{i}^{\text{val}}\left( t_{m} \right)\}^{2}}.$$
+
+This metric is invariant to the unidentifiable additive-in-$t$ component
+of $\beta(s,t)$ (see the package’s
+`Simulation/FoFR_identifiability_note.md` for details), so it provides
+an apples-to-apples comparison even though `pffr()` includes an explicit
+functional intercept and
+[`fofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fofr_bayes.md)
+does not.
+
+### Results
+
+![FoFR predictive accuracy](figures/fofr_sim_pred_relMSE.png)
+
+FoFR predictive accuracy
 
 ## References
 

@@ -8,16 +8,16 @@
 #' @noRd
 #' 
 refundBayesformula = function(formula){
-  formula_val <- brms::brmsformula(formula)
-  y_var <- formula_val$formula[[2]]
-  #if(class(formula_val$formula[[3]]) == "name"){ ## when there is no functional variable
-    if(is.name(formula_val$formula[[3]])){
-      
-    return(list(scalar_var = list(formula_val$formula[[3]]),
+  formula_val <- stats::as.formula(formula)
+  y_var <- formula_val[[2]]
+  #if(class(formula_val[[3]]) == "name"){ ## when there is no functional variable
+    if(is.name(formula_val[[3]])){
+
+    return(list(scalar_var = list(formula_val[[3]]),
                 func_var = list(),
                 y_var = y_var))
   }else{ ## when there are functional variables
-    var_extract <- extract_var(formula_val$formula[[3]])
+    var_extract <- extract_var(formula_val[[3]])
     return(list(scalar_var = var_extract$scalar_var,
                 func_var = var_extract$func_var,
                 y_var = y_var))

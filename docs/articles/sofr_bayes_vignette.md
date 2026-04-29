@@ -17,7 +17,14 @@ published in *Statistics in Medicine*.
 
 ## Install the `refundBayes` Package
 
-The `refundBayes` package can be installed from GitHub:
+The `refundBayes` package can be installed from CRAN:
+
+``` r
+install.packages("refundBayes")
+```
+
+For the latest version of the `refundBayes` package, users can install
+from GitHub:
 
 ``` r
 library(remotes)
@@ -167,6 +174,29 @@ denotes non-informative priors (uniform or weakly informative). The
 smoothing variance $\sigma_{b}^{2}$ is assigned an inverse-Gamma prior
 $IG(0.001,0.001)$.
 
+### Optional: Joint FPCA Modeling
+
+When the observed functional predictor $W_{i}(s)$ contains substantial
+measurement noise, plugging it directly into the integral
+$\int W_{i}(s)\beta(s)\, ds$ ignores the predictor uncertainty and tends
+to attenuate the estimated $\beta( \cdot )$ toward zero
+(errors-in-variables bias) and to underestimate the credible-band width.
+The `joint_FPCA` argument of
+[`sofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/sofr_bayes.md)
+activates an alternative model in which $W_{i}(s)$ is replaced by an
+FPCA representation and the subject-specific FPC scores are sampled
+**jointly** with the regression coefficients, so the FPCA uncertainty is
+propagated into the posterior of $\beta( \cdot )$.
+
+The joint FPCA option works for SoFR with both Gaussian and binomial
+outcomes, and the same argument is also available in
+[`fcox_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fcox_bayes.md)
+and
+[`fofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fofr_bayes.md).
+The full model specification, the Stan code that is generated, and
+worked examples are described in the dedicated **[Joint FPCA
+vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.md)**.
+
 ## The `sofr_bayes()` Function
 
 ### Usage
@@ -188,18 +218,18 @@ sofr_bayes(
 
 ### Arguments
 
-| Argument     | Description                                                                                                                                                                                                                                                                                      |
-|:-------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `formula`    | Functional regression formula, using the same syntax as [`mgcv::gam`](https://rdrr.io/pkg/mgcv/man/gam.html). Functional predictors are specified using the [`s()`](https://rdrr.io/pkg/mgcv/man/s.html) term with `by = lmat * wmat` to encode the Riemann sum integration (see Example below). |
-| `data`       | A data frame containing all scalar and functional variables used in the model.                                                                                                                                                                                                                   |
-| `family`     | Distribution of the outcome variable. Currently supports [`gaussian()`](https://rdrr.io/r/stats/family.html) and [`binomial()`](https://rdrr.io/r/stats/family.html). Default is [`gaussian()`](https://rdrr.io/r/stats/family.html).                                                            |
-| `joint_FPCA` | A logical (`TRUE`/`FALSE`) vector of the same length as the number of functional predictors, indicating whether to jointly model FPCA for each functional predictor. Default is `NULL`, which sets all entries to `FALSE` (no joint FPCA).                                                       |
-| `intercept`  | Logical. Whether to include an intercept term in the linear predictor. Default is `TRUE`.                                                                                                                                                                                                        |
-| `runStan`    | Logical. Whether to run the Stan program. If `FALSE`, the function only generates the Stan code and data without sampling. This is useful for inspecting or modifying the generated Stan code. Default is `TRUE`.                                                                                |
-| `niter`      | Total number of Bayesian posterior sampling iterations (including warmup). Default is `3000`.                                                                                                                                                                                                    |
-| `nwarmup`    | Number of warmup (burn-in) iterations. These samples are discarded and not used for inference. Default is `1000`.                                                                                                                                                                                |
-| `nchain`     | Number of Markov chains for posterior sampling. Multiple chains help assess convergence. Default is `3`.                                                                                                                                                                                         |
-| `ncores`     | Number of CPU cores to use when executing the chains in parallel. Default is `1`.                                                                                                                                                                                                                |
+| Argument     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|:-------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `formula`    | Functional regression formula, using the same syntax as [`mgcv::gam`](https://rdrr.io/pkg/mgcv/man/gam.html). Functional predictors are specified using the [`s()`](https://rdrr.io/pkg/mgcv/man/s.html) term with `by = lmat * wmat` to encode the Riemann sum integration (see Example below).                                                                                                                                                                                                                                                                                                  |
+| `data`       | A data frame containing all scalar and functional variables used in the model.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `family`     | Distribution of the outcome variable. Currently supports [`gaussian()`](https://rdrr.io/r/stats/family.html) and [`binomial()`](https://rdrr.io/r/stats/family.html). Default is [`gaussian()`](https://rdrr.io/r/stats/family.html).                                                                                                                                                                                                                                                                                                                                                             |
+| `joint_FPCA` | A logical (`TRUE`/`FALSE`) vector of the same length as the number of functional predictors, indicating whether to jointly model FPCA for each functional predictor. When `TRUE`, the observed functional predictor is replaced by an FPCA representation and its FPC scores are sampled jointly with the regression coefficients (errors-in-variables-aware fit). See the [Joint FPCA vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.md) for the model specification and worked examples. Default is `NULL`, which sets all entries to `FALSE` (no joint FPCA). |
+| `intercept`  | Logical. Whether to include an intercept term in the linear predictor. Default is `TRUE`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `runStan`    | Logical. Whether to run the Stan program. If `FALSE`, the function only generates the Stan code and data without sampling. This is useful for inspecting or modifying the generated Stan code. Default is `TRUE`.                                                                                                                                                                                                                                                                                                                                                                                 |
+| `niter`      | Total number of Bayesian posterior sampling iterations (including warmup). Default is `3000`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `nwarmup`    | Number of warmup (burn-in) iterations. These samples are discarded and not used for inference. Default is `1000`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `nchain`     | Number of Markov chains for posterior sampling. Multiple chains help assess convergence. Default is `3`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `ncores`     | Number of CPU cores to use when executing the chains in parallel. Default is `1`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ### Return Value
 
@@ -426,7 +456,9 @@ cat(sofr_code$stancode)
 - **Joint FPCA**: When functional predictors are measured with
   substantial noise, consider setting `joint_FPCA = TRUE` for the
   relevant predictor to jointly estimate FPCA scores and regression
-  coefficients.
+  coefficients. See the [Joint FPCA
+  vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.md)
+  for details.
 
 ## References
 
