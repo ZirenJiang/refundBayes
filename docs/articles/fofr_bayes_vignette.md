@@ -624,62 +624,6 @@ The `parameters` block declares matrix-valued parameters for the
 bivariate coefficients, and the `model` block includes both
 $s$-direction and $t$-direction smoothness priors.
 
-## Practical Recommendations
-
-- **Number of predictor-domain basis functions (`k`)**: Controls the
-  flexibility of $\beta(s,t)$ in the $s$-direction. Start with `k = 10`
-  for exploration. In practice, 10–20 basis functions are typically
-  sufficient, but this depends on the complexity of the true
-  $\beta(s,t)$.
-
-- **Number of response-domain basis functions (`spline_df`)**: Controls
-  the flexibility in the $t$-direction. The default `spline_df = 10` is
-  often adequate for moderately smooth coefficient functions.
-
-- **Spline types (`bs` and `spline_type`)**: Use `"cr"` (cubic
-  regression splines) for general functional data. Use `"cc"` (cyclic
-  cubic regression splines) when the functional data are periodic. The
-  predictor-domain basis (`bs`) and response-domain basis
-  (`spline_type`) may use different types.
-
-- **Sample size and grid resolution**: FoFR requires estimating a
-  surface $\beta(s,t)$, which demands more data than SoFR or FoSR. As a
-  rough guide, ensure $n > k \times \texttt{𝚜𝚙𝚕𝚒𝚗𝚎\_𝚍𝚏}$.
-
-- **Number of iterations and chains**: FoFR models have more parameters
-  than SoFR or FoSR. A recommended starting point is `niter = 3000`,
-  `nwarmup = 1000`, `nchain = 3`. Increase iterations if convergence
-  diagnostics indicate issues.
-
-- **Convergence diagnostics**: After fitting, examine traceplots and
-  $\widehat{R}$ statistics using the `rstan` package:
-
-  ``` r
-  rstan::traceplot(fit_fofr$stanfit, pars = c("sigma_eps", "sigmabr_1", "sigma_t_1"))
-  print(fit_fofr$stanfit, pars = c("sigma_eps", "sigmabr_1", "sigma_t_1"))
-  ```
-
-  Warnings about bulk ESS, tail ESS, or $\widehat{R} > 1.01$ indicate
-  that more iterations or chains may be needed.
-
-- **Common grid assumption**: The current implementation assumes that
-  both the functional response and functional predictors are observed on
-  common grids across all subjects. Subject-specific observation grids
-  are not yet supported.
-
-- **Multiple functional predictors**: Multiple functional predictors can
-  be included by adding additional
-  [`s()`](https://rdrr.io/pkg/mgcv/man/s.html) terms in the formula.
-  Each functional predictor receives its own pair of smoothing
-  parameters ($\sigma_{s,j}^{2}$, $\sigma_{t,j}^{2}$).
-
-- **Joint FPCA**: When functional predictors are measured with
-  substantial noise, consider setting `joint_FPCA = TRUE` for the
-  relevant predictor to jointly estimate FPCA scores and the bivariate
-  coefficient. See the [Joint FPCA
-  vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.md)
-  for details.
-
 ## Simulation Study: Bayesian vs Frequentist FoFR
 
 To benchmark
