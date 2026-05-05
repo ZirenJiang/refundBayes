@@ -12,12 +12,19 @@
 
 ## Supported Models
 
-| Model                                  | Function       | Response                 | Predictors          |
-|:------------------------|:---------------|:---------------|:---------------|
-| Scalar-on-Function Regression (SoFR)   | `sofr_bayes()` | Scalar                   | Functional / Scalar |
-| Function-on-Scalar Regression (FoSR)   | `fosr_bayes()` | Functional               | Scalar              |
-| Function-on-Function Regression (FoFR) | `fofr_bayes()` | Functional               | Functional / Scalar |
-| Functional Cox Regression (FCox)       | `fcox_bayes()` | Survival (time-to-event) | Functional / Scalar |
+| Model                                          | Function       | Response                   | Predictors            |
+|:-----------------------------------------------|:---------------|:---------------------------|:----------------------|
+| Scalar-on-Function Regression (SoFR)           | `sofr_bayes()` | Scalar                     | Functional / Scalar   |
+| Function-on-Scalar Regression (FoSR)           | `fosr_bayes()` | Functional                 | Scalar                |
+| Function-on-Function Regression (FoFR)         | `fofr_bayes()` | Functional                 | Functional / Scalar   |
+| Functional Cox Regression (FCox)               | `fcox_bayes()` | Survival (time-to-event)   | Functional / Scalar   |
+| Functional Principal Component Analysis (FPCA) | `fpca_bayes()` | Functional (decomposition) | — (unsupervised)      |
+
+`fpca_bayes()` decomposes a functional outcome into a posterior mean
+function $\mu(t)$ plus a low-rank FPC expansion, with full Bayesian
+inference on the mean, FPC scores, eigenvalue standard deviations, and the
+residual SD. It can also be used as a stand-alone preprocessing step before
+joint-FPCA regression (see the [Joint FPCA vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.html)).
 
 ## Installation
 
@@ -79,6 +86,8 @@ Detailed vignettes with full model descriptions, prior specifications, and worke
 -   [Bayesian Function-on-Scalar Regression (FoSR)](https://zirenjiang.github.io/refundBayes/articles/fosr_bayes_vignette.html)
 -   [Bayesian Function-on-Function Regression (FoFR)](https://zirenjiang.github.io/refundBayes/articles/fofr_bayes_vignette.html)
 -   [Bayesian Functional Cox Regression (FCox)](https://zirenjiang.github.io/refundBayes/articles/fcox_bayes_vignette.html)
+-   [Bayesian Functional Principal Component Analysis (FPCA)](https://zirenjiang.github.io/refundBayes/articles/fpca_bayes_vignette.html)
+-   [Joint FPCA Modeling in refundBayes](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.html)
 
 ## Citation
 

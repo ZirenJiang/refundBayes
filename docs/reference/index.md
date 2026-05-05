@@ -1,6 +1,6 @@
 # Package index
 
-## Scalar-on-Function Regression
+## Scalar-on-Function Regression (SoFR)
 
 Model a scalar outcome as a function of one or more functional
 predictors.
@@ -8,14 +8,14 @@ predictors.
 - [`sofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/sofr_bayes.md)
   : Bayesian Scalar-on-Function Regression
 
-## Function-on-Scalar Regression
+## Function-on-Scalar Regression (FoSR)
 
 Model a functional outcome as a function of scalar predictors.
 
 - [`fosr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fosr_bayes.md)
   : Bayesian Function-on-Scalar Regression
 
-## Function-on-Function Regression
+## Function-on-Function Regression (FoFR)
 
 Model a functional outcome as a function of functional (and optional
 scalar) predictors.
@@ -23,14 +23,14 @@ scalar) predictors.
 - [`fofr_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fofr_bayes.md)
   : Bayesian Function-on-Function Regression
 
-## Functional Cox Regression
+## Functional Cox Regression (FCox)
 
 Survival model with functional predictors and right-censored outcomes.
 
 - [`fcox_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fcox_bayes.md)
   : Bayesian Functional Cox Regression
 
-## Functional Principal Component Analysis
+## Functional Principal Component Analysis (FPCA)
 
 Bayesian FPCA decomposition of a functional outcome.
 

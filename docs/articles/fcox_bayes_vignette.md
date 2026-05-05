@@ -1,4 +1,4 @@
-# Bayesian Functional Cox Regression
+# Bayesian Functional Cox Regression (FCox)
 
 ## Introduction
 

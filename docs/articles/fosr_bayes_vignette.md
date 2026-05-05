@@ -1,4 +1,4 @@
-# Bayesian Function-on-Scalar Regression
+# Bayesian Function-on-Scalar Regression (FoSR)
 
 ## Introduction
 

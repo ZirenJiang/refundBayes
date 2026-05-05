@@ -1,4 +1,4 @@
-# Bayesian Function-on-Function Regression
+# Bayesian Function-on-Function Regression (FoFR)
 
 ## Introduction
 

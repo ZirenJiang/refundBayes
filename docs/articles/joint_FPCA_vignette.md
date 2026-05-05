@@ -1,4 +1,4 @@
-# Joint FPCA Modeling in refundBayes
+# Joint Modelling of Functional Regression and FPCA
 
 ## Introduction
 
@@ -19,6 +19,17 @@ functional predictor $W_{i}(s)$ is *not* used directly as a covariate;
 instead, the regression model is built on top of a **functional
 principal component analysis (FPCA) sub-model** for $W_{i}(s)$, and the
 FPC scores are sampled jointly with the regression coefficients.
+
+The joint-FPCA option replaces each functional predictor $W_{i}(s)$ with
+a low-rank FPCA representation $\sum_{j = 1}^{J}\xi_{ij}\,\phi_{j}(s)$ —
+fixed eigenfunctions $\phi_{j}$ from
+[`refund::fpca.sc()`](https://rdrr.io/pkg/refund/man/fpca.sc.html),
+subject-specific scores $\xi_{ij}$ centered on their frequentist FPCA
+estimates — and samples those scores *jointly* with the regression
+coefficient $\beta( \cdot )$, propagating predictor measurement-error
+uncertainty into the posterior of $\beta$ and correcting the
+errors-in-variables attenuation that arises when noisy $W_{i}$ is
+plugged into the regression as if it were observed exactly.
 
 The methodology mirrors **Section 4 of Jiang, Crainiceanu, and Cui
 (2025), *Tutorial on Bayesian Functional Regression Using Stan*,

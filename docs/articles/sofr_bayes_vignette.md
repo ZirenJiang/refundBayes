@@ -1,4 +1,4 @@
-# Bayesian Scalar-on-Function Regression with \`refundBayes::sofr_bayes\`
+# Bayesian Scalar-on-Function Regression (SoFR)
 
 ## Introduction
 

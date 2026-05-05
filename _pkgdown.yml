@@ -24,31 +24,31 @@ home:
     href: https://doi.org/10.1002/sim.70265
 
 reference:
-- title: "Scalar-on-Function Regression"
+- title: "Scalar-on-Function Regression (SoFR)"
   desc: >
     Model a scalar outcome as a function of one or more functional predictors.
   contents:
   - sofr_bayes
 
-- title: "Function-on-Scalar Regression"
+- title: "Function-on-Scalar Regression (FoSR)"
   desc: >
     Model a functional outcome as a function of scalar predictors.
   contents:
   - fosr_bayes
 
-- title: "Function-on-Function Regression"
+- title: "Function-on-Function Regression (FoFR)"
   desc: >
     Model a functional outcome as a function of functional (and optional scalar) predictors.
   contents:
   - fofr_bayes
 
-- title: "Functional Cox Regression"
+- title: "Functional Cox Regression (FCox)"
   desc: >
     Survival model with functional predictors and right-censored outcomes.
   contents:
   - fcox_bayes
 
-- title: "Functional Principal Component Analysis"
+- title: "Functional Principal Component Analysis (FPCA)"
   desc: >
     Bayesian FPCA decomposition of a functional outcome.
   contents:

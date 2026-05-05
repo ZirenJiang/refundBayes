@@ -39,12 +39,12 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
-    <li><a class="dropdown-item" href="articles/sofr_bayes_vignette.html">Bayesian Scalar-on-Function Regression with `refundBayes::sofr_bayes`</a></li>
-    <li><a class="dropdown-item" href="articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression</a></li>
-    <li><a class="dropdown-item" href="articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression</a></li>
-    <li><a class="dropdown-item" href="articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression</a></li>
+    <li><a class="dropdown-item" href="articles/sofr_bayes_vignette.html">Bayesian Scalar-on-Function Regression (SoFR)</a></li>
+    <li><a class="dropdown-item" href="articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression (FoSR)</a></li>
+    <li><a class="dropdown-item" href="articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression (FoFR)</a></li>
+    <li><a class="dropdown-item" href="articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression (FCox)</a></li>
     <li><a class="dropdown-item" href="articles/fpca_bayes_vignette.html">Bayesian Functional Principal Component Analysis</a></li>
-    <li><a class="dropdown-item" href="articles/joint_FPCA_vignette.html">Joint FPCA Modeling in refundBayes</a></li>
+    <li><a class="dropdown-item" href="articles/joint_FPCA_vignette.html">Joint Modelling of Functional Regression and FPCA</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -75,10 +75,10 @@
 </h2>
 <table class="table">
 <colgroup>
-<col width="34%">
-<col width="21%">
-<col width="21%">
-<col width="21%">
+<col width="41%">
+<col width="13%">
+<col width="24%">
+<col width="20%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Model</th>
@@ -111,8 +111,15 @@
 <td align="left">Survival (time-to-event)</td>
 <td align="left">Functional / Scalar</td>
 </tr>
+<tr class="odd">
+<td align="left">Functional Principal Component Analysis (FPCA)</td>
+<td align="left"><code><a href="reference/fpca_bayes.html">fpca_bayes()</a></code></td>
+<td align="left">Functional (decomposition)</td>
+<td align="left">— (unsupervised)</td>
+</tr>
 </tbody>
 </table>
+<p><code><a href="reference/fpca_bayes.html">fpca_bayes()</a></code> decomposes a functional outcome into a posterior mean function <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu(t)</annotation></semantics></math> plus a low-rank FPC expansion, with full Bayesian inference on the mean, FPC scores, eigenvalue standard deviations, and the residual SD. It can also be used as a stand-alone preprocessing step before joint-FPCA regression (see the <a href="https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.html">Joint FPCA vignette</a>).</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -170,6 +177,8 @@
 <li><a href="https://zirenjiang.github.io/refundBayes/articles/fosr_bayes_vignette.html">Bayesian Function-on-Scalar Regression (FoSR)</a></li>
 <li><a href="https://zirenjiang.github.io/refundBayes/articles/fofr_bayes_vignette.html">Bayesian Function-on-Function Regression (FoFR)</a></li>
 <li><a href="https://zirenjiang.github.io/refundBayes/articles/fcox_bayes_vignette.html">Bayesian Functional Cox Regression (FCox)</a></li>
+<li><a href="https://zirenjiang.github.io/refundBayes/articles/fpca_bayes_vignette.html">Bayesian Functional Principal Component Analysis (FPCA)</a></li>
+<li><a href="https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.html">Joint FPCA Modeling in refundBayes</a></li>
 </ul>
 </div>
 <div class="section level2">
