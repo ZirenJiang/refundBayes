@@ -1,4 +1,4 @@
-# Package: [refundBayes](https://zirenjiang.github.io/refundBayes/)
+# [refundBayes](https://zirenjiang.github.io/refundBayes/): Bayesian functional regression with Stan
 
 **refundBayes** provides a convenient interface for Bayesian functional
 regression using [Stan](https://mc-stan.org/). The package supports
@@ -20,12 +20,8 @@ providing full Bayesian posterior inference.
 | Functional Cox Regression (FCox)               | [`fcox_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fcox_bayes.md) | Survival (time-to-event)   | Functional / Scalar |
 | Functional Principal Component Analysis (FPCA) | [`fpca_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fpca_bayes.md) | Functional (decomposition) | — (unsupervised)    |
 
-[`fpca_bayes()`](https://zirenjiang.github.io/refundBayes/reference/fpca_bayes.md)
-decomposes a functional outcome into a posterior mean function $\mu(t)$
-plus a low-rank FPC expansion, with full Bayesian inference on the mean,
-FPC scores, eigenvalue standard deviations, and the residual SD. It can
-also be used as a stand-alone preprocessing step before joint-FPCA
-regression (see the [Joint FPCA
+The package also support the joint model of FPCA for functional
+predictors in the functional regression (see the [Joint FPCA
 vignette](https://zirenjiang.github.io/refundBayes/articles/joint_FPCA_vignette.html)).
 
 ## Installation
@@ -133,8 +129,8 @@ If you use **refundBayes** in your work, please cite:
 - [mgcv](https://cran.r-project.org/package=mgcv) – Generalized additive
   models
 - [rstan](https://mc-stan.org/rstan/) – R interface to Stan
-- [brms](https://paul-buerkner.github.io/brms/) – Bayesian regression
-  models using Stan
+- [brms](https://paulbuerkner.com/brms/) – Bayesian regression models
+  using Stan
 
 ## Contact
 

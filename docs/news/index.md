@@ -2,6 +2,8 @@
 
 ## refundBayes 0.6.0
 
+CRAN release: 2026-05-08
+
 ### New features
 
 - Added

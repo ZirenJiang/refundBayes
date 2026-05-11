@@ -15,7 +15,8 @@
 ^sofr_bayes_vignette_gpt\.Rmd
 data/
 Tutorial_V2_files/
-^\.RDataTmp$
+^\.RDataTmp[0-9]*$
+^\.RData$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
